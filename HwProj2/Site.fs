@@ -75,7 +75,7 @@ module Site =
                         h1 [] [text ("Sign Up")]
                         client <@ Client.RegUser() @>
                 ]
-            return! Templating.Main ctx EndPoint.Login "SignUp" [content]      
+            return! Templating.Main ctx EndPoint.SignUp "SignUp" [content]      
         }
     [<Website>]
     let Main =
