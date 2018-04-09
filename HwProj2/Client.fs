@@ -67,6 +67,6 @@ module Client =
                 Controls.Simple.InputPasswordWithError "Password" pass submit.View
                 Controls.Simple.InputWithError "Name" name submit.View
                 Controls.Simple.InputWithError "Email" email submit.View
-                Controls.Button "Sign Up" [attr.``class`` "btn btn-primary"] submit.Trigger
+                Controls.Button "Register" [attr.``class`` "btn btn-primary"] submit.Trigger
                 Controls.ShowErrors [attr.style "margin-top:1em;"]submit.View
             ])

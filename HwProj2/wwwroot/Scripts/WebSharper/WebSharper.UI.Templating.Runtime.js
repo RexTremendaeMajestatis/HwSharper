@@ -103,15 +103,15 @@
   {
    var p,r,r$1,r$2;
    return filledVars.Contains(name)?null:(p=ty===0?(r=Var.Create$1(""),[{
-    $:7,
+    $:8,
     $0:name,
     $1:r
    },r]):ty===1?(r$1=Var.Create$1(0),[{
-    $:12,
+    $:13,
     $0:name,
     $1:r$1
    },r$1]):ty===2?(r$2=Var.Create$1(false),[{
-    $:8,
+    $:9,
     $0:name,
     $1:r$2
    },r$2]):Operators.FailWith("Invalid value type"),(allVars.set_Item(name,p[1]),{
@@ -127,7 +127,7 @@
    while(e.MoveNext())
     {
      h=e.Current();
-     (h.$==7?($1=[h.$0,Client.Box(h.$1)],true):h.$==10?($1=[h.$0,Client.Box(h.$1)],true):h.$==9?($1=[h.$0,Client.Box(h.$1)],true):h.$==12?($1=[h.$0,Client.Box(h.$1)],true):h.$==11?($1=[h.$0,Client.Box(h.$1)],true):h.$==8&&($1=[h.$0,Client.Box(h.$1)],true))?(n=$1[0],filledVars.Add(n),allVars.set_Item(n,$1[1])):void 0;
+     (h.$==8?($1=[h.$0,Client.Box(h.$1)],true):h.$==11?($1=[h.$0,Client.Box(h.$1)],true):h.$==10?($1=[h.$0,Client.Box(h.$1)],true):h.$==13?($1=[h.$0,Client.Box(h.$1)],true):h.$==12?($1=[h.$0,Client.Box(h.$1)],true):h.$==9&&($1=[h.$0,Client.Box(h.$1)],true))?(n=$1[0],filledVars.Add(n),allVars.set_Item(n,$1[1])):void 0;
     }
   }
   finally
@@ -162,22 +162,11 @@
  {
   return Doc.RunFullDocTemplate(fillWith);
  };
- Client.WrapEventWithOnlyArgs=Runtime$2.Curried3(function(f,el,ev)
- {
-  return f(el,ev);
- });
- Client.WrapInstanceEventWithArgs=function(ti,f)
- {
-  return(Runtime$2.Curried3(f))(ti[0]);
- };
- Client.WrapInstanceEvent=function(ti,f)
+ Client.AfterRenderQ2$59$26=function(f)
  {
   return function()
   {
-   return function()
-   {
-    return f(ti[0]);
-   };
+   f();
   };
  };
  Client.Box=Global.id;

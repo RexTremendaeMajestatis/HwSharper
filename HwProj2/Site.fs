@@ -8,8 +8,6 @@ open WebSharper.UI.Server
 type EndPoint =
     | [<EndPoint "/">] Home
     | [<EndPoint "/about">] About
-    | [<EndPoint "/login">] Login
-    | [<EndPoint "/signup">] SignUp
 
 module Templating =
     open WebSharper.UI.Html
@@ -25,8 +23,6 @@ module Templating =
         [
             "Home" => EndPoint.Home
             "About" => EndPoint.About
-            "Login" => EndPoint.Login
-            "Sign Up" => EndPoint.SignUp
         ]
 
     let Main ctx action (title: string) (body: Doc list) =
@@ -40,19 +36,8 @@ module Templating =
 
 module Site =
     open WebSharper.UI.Html
-
-    let HomePage ctx =
-        Templating.Main ctx EndPoint.Home "Home" [
-            h1 [] [text "Welcome to HwProj2"]
-        ]
-
-    let AboutPage ctx =
-        Templating.Main ctx EndPoint.About "About" [
-            h1 [] [text "About"]
-            p [] [text "I'm just trying to deal with my course work:с"]
-        ]
-
-    let LoginPage (ctx : Context<_>) =
+   
+    let HomePage (ctx : Context<_>) =
         async {
             let! loggedIn = ctx.UserSession.GetLoggedInUser()
             let content =
@@ -63,27 +48,27 @@ module Site =
                             client <@ Client.LoggedInUser() @>
                     ]
                 | None ->
-                    div [attr.style "width:300px"] [
-                        client <@ Client.AnonUser() @>
+                    div [] [
+                        div[attr.style "float:left; width:400px"][ h1[][text("Log In")]
+                                                                   client <@ Client.AnonUser() @>]
+                        div[attr.style "float:right; width:400px"][ h1[][text("Register")]
+                                                                    client <@ Client.RegUser() @>]
                     ]
-            return! Templating.Main ctx EndPoint.Login "Login" [content]
+            return! Templating.Main ctx EndPoint.Home "Home" [content]
         }
-    let SignUpPage (ctx : Context<_>) =
-        async {
-            let content =
-                div [] [
-                        h1 [] [text ("Sign Up")]
-                        client <@ Client.RegUser() @>
-                ]
-            return! Templating.Main ctx EndPoint.SignUp "SignUp" [content]      
-        }
+
+    let AboutPage ctx =
+        Templating.Main ctx EndPoint.About "About" [
+            h1 [] [text "About"]
+            p [] [text "I'm just trying to deal with my course work:с"]
+        ]
+
+
     [<Website>]
     let Main =
         Application.MultiPage (fun ctx endpoint ->
             match endpoint with
             | EndPoint.Home -> HomePage ctx
             | EndPoint.About -> AboutPage ctx
-            | EndPoint.Login -> LoginPage ctx
-            | EndPoint.SignUp -> SignUpPage ctx
         )
 

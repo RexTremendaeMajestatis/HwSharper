@@ -29,7 +29,7 @@
    return Doc.Element("form",[],[Simple.InputWithError("Username",user,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),Simple.InputWithError("Name",name,submit.view),Simple.InputWithError("Email",email,submit.view),((function(a)
    {
     return(Controls.Button())(a);
-   }("Sign Up"))(List.ofArray([AttrProxy.Create("class","btn btn-primary")])))(function()
+   }("Register"))(List.ofArray([AttrProxy.Create("class","btn btn-primary")])))(function()
    {
     submit.Trigger();
    }),Controls.ShowErrors([AttrProxy.Create("style","margin-top:1em;")],submit.view)]);
@@ -103,23 +103,19 @@
  });
  Client.LoggedInUser=function()
  {
-  function a(a$1,a$2)
+  return Doc.Element("div",[],[Doc.Element("p",[],[Doc.TextNode("Click to log out")]),Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
   {
-   var b;
-   return Concurrency.Start((b=null,Concurrency.Delay(function()
+   return function()
    {
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("HwProj2:HwProj2.Server.LogoutUser:-829366048",[]),function()
+    var b;
+    return Concurrency.Start((b=null,Concurrency.Delay(function()
     {
-     Global.location.reload();
-     return Concurrency.Return(null);
-    });
-   })),null);
-  }
-  return Doc.Element("div",[],[Doc.Element("p",[],[Doc.TextNode("Click to log out")]),Doc.Element("button",[AttrProxy.HandlerImpl("click",function($1)
-  {
-   return function($2)
-   {
-    return a($1,$2);
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("HwProj2:HwProj2.Server.LogoutUser:-829366048",[]),function()
+     {
+      Global.location.reload();
+      return Concurrency.Return(null);
+     });
+    })),null);
    };
   })],[Doc.TextNode("log out")])]);
  };
