@@ -1,10 +1,11 @@
 (function()
 {
  "use strict";
- var Global,HwProj2,Client,WebSharper,UI,Doc,Forms,Bootstrap,Controls,Simple,List,AttrProxy,Form,IntelliFactory,Runtime,Concurrency,Remoting,AjaxRemotingProvider,Pervasives,Validation;
+ var Global,HwProj2,Client,Templating,WebSharper,UI,Doc,Forms,Bootstrap,Controls,Simple,List,AttrProxy,Form,IntelliFactory,Runtime,Concurrency,Remoting,AjaxRemotingProvider,Pervasives,Validation;
  Global=window;
  HwProj2=Global.HwProj2=Global.HwProj2||{};
  Client=HwProj2.Client=HwProj2.Client||{};
+ Templating=HwProj2.Templating=HwProj2.Templating||{};
  WebSharper=Global.WebSharper;
  UI=WebSharper&&WebSharper.UI;
  Doc=UI&&UI.Doc;
@@ -89,34 +90,20 @@
    };
   }),Validation.IsNotEmpty("Enter an username",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))))));
  };
- Client.LoggedInUser$17$34=Runtime.Curried3(function($1,$2,$3)
+ Client.LogOutUser=function()
  {
   var b;
-  return Concurrency.Start((b=null,Concurrency.Delay(function()
+  Concurrency.Start((b=null,Concurrency.Delay(function()
   {
    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("HwProj2:HwProj2.Server.LogoutUser:-829366048",[]),function()
    {
-    Global.location.reload();
+    Global.location.href="/";
     return Concurrency.Return(null);
    });
   })),null);
- });
- Client.LoggedInUser=function()
- {
-  return Doc.Element("div",[],[Doc.Element("p",[],[Doc.TextNode("Click to log out")]),Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    var b;
-    return Concurrency.Start((b=null,Concurrency.Delay(function()
-    {
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("HwProj2:HwProj2.Server.LogoutUser:-829366048",[]),function()
-     {
-      Global.location.reload();
-      return Concurrency.Return(null);
-     });
-    })),null);
-   };
-  })],[Doc.TextNode("log out")])]);
  };
+ Templating.MenuBarLogged$44$56=Runtime.Curried3(function($1,$2,$3)
+ {
+  return Client.LogOutUser();
+ });
 }());

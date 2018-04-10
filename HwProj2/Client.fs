@@ -11,17 +11,11 @@ open WebSharper.Forms.Bootstrap
 [<JavaScript>]
 module Client =
 
-    let LoggedInUser () =
-        div [] [
-                p [] [text "Click to log out"]
-                button [on.click (fun _ _ ->
-                    async{
-                        do! Server.LogoutUser()
-                        return JS.Window.Location.Reload()
-                    } |> Async.Start
-                    )
-            ] [text "log out"]
-        ]
+    let LogOutUser () =
+        async{ do! Server.LogoutUser()
+               return JS.Window.Location.Href <- "/"
+             } |> Async.Start
+
 
     let AnonUser () =
         Form.Return(fun user pass -> { User = user; Password = pass })
