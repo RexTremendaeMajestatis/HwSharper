@@ -37,17 +37,19 @@ module Client =
                 Controls.Button "Log in" [attr.``class`` "btn btn-primary"] submit.Trigger
                 Controls.ShowErrors [attr.style "margin-top:1em;"]submit.View
             ])
+         
 
     let RegUser () =
-        Form.Return(fun login name email pass -> { UserId = login; Password = pass; Fullname = name; Email = email })
-        <*> (Form.Yield ""
+        Form.Return(fun login pass name email isTeacher -> { UserId = login; Password = pass; Fullname = name; Email = email; IsTeacher = isTeacher})
+        <*> (Form.Yield "" 
              |> Validation.IsNotEmpty "Enter an username")
         <*> (Form.Yield ""
              |> Validation.IsNotEmpty "Enter a password")
         <*> (Form.Yield ""
              |> Validation.IsNotEmpty "Enter a full name")
         <*> (Form.Yield ""
-             |> Validation.IsNotEmpty "Enter a email")
+             |> Validation.IsNotEmpty "Enter an email")
+        <*> Form.Yield false
         |> Form.WithSubmit
         |> Form.Run (fun regData ->
             async {
@@ -55,12 +57,14 @@ module Client =
                 return JS.Window.Location.Reload()
             } |> Async.Start
         )
-        |> Form.Render (fun user pass name email submit ->
+        |> Form.Render (fun user pass name email isTeacher submit ->
             form [] [
                 Controls.Simple.InputWithError "Username" user submit.View
                 Controls.Simple.InputPasswordWithError "Password" pass submit.View
                 Controls.Simple.InputWithError "Name" name submit.View
                 Controls.Simple.InputWithError "Email" email submit.View
+                Controls.Radio "Teacher" [attr.``class`` "radio"; attr.``checked`` "checked"] (isTeacher, [], [attr.``type`` "radio"; attr.name "optradio"]) 
+                Controls.Radio "Student" [attr.``class`` "radio"] (Var.Create(not (isTeacher.Get())), [], [attr.``type`` "radio"; attr.name "optradio"])
                 Controls.Button "Register" [attr.``class`` "btn btn-primary"] submit.Trigger
-                Controls.ShowErrors [attr.style "margin-top:1em;"]submit.View
+                Controls.ShowErrors [attr.style "margin-top:1em;"] submit.View
             ])

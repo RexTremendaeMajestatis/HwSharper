@@ -13,28 +13,30 @@ type RegisterData =
         Password: string
         Fullname: string
         Email: string
+        IsTeacher: bool
     }
 
 module Server =
-    open DataStorage.UserRegistry
+    open DataManager
 
     [<Rpc>]
     let RegisterUser (regData : RegisterData) =
         let ctx = Web.Remoting.GetContext()
-        async {
-            create "user_accounts.db" 
-                   regData.UserId 
-                   regData.Password 
-                   regData.Fullname 
-                   regData.Email |> ignore
-            return true 
-        } |> Async.Ignore
+        let reg = UserRegistry()
+        reg.Create(
+                   regData.UserId,
+                   regData.Password, 
+                   regData.Fullname, 
+                   regData.Email,
+                   regData.IsTeacher)
+        ctx.UserSession.LoginUser(regData.UserId, persistent = true) |> Async.Ignore
 
     [<Rpc>]
     let LoginUser (userData : LoginData) =
         let ctx = Web.Remoting.GetContext()
-        let us = get "user_accounts.db" userData.User
-        if (us <> None && userData.Password = us.Value.Password)
+        let log = UserRegistry()
+        let us = log.Search(userData.User, userData.Password)
+        if us
         then ctx.UserSession.LoginUser(userData.User, persistent = true) |> Async.Ignore
         else async.Return()
 

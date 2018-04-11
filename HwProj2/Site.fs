@@ -6,7 +6,7 @@ open WebSharper.UI
 open WebSharper.UI.Server
 
 type EndPoint =
-    | [<EndPoint "/">] Home
+    | [<EndPoint "/">] Start
     | [<EndPoint "/about">] About
     | [<EndPoint "/profile">] Profile
     | [<EndPoint "/courses">] Courses
@@ -16,32 +16,21 @@ module Templating =
 
     type MainTemplate = Templating.Template<"Main.html">
 
-    // Compute a menubar where the menu item for the given endpoint is active
     let MenuBarAnon (ctx: Context<EndPoint>) endpoint : Doc list =
         let ( => ) txt act =
              li [if endpoint = act then yield attr.``class`` "active"] [
                 a [attr.href (ctx.Link act)] [text txt]
              ]
         [
-            "Home" => EndPoint.Home
+            "Start" => EndPoint.Start
             "About" => EndPoint.About
         ]
-
-    (*let MenuBarLogged (ctx: Context<EndPoint>) endpoint : Doc list =
-        let ( => ) txt act =
-             li [if endpoint = act then yield attr.``class`` "active"] [
-                a [attr.href (ctx.Link act)] [text txt]
-             ]
-        [
-            "Profile" => EndPoint.Profile
-            "About" => EndPoint.About
-        ]*)
       
     let MenuBarLogged (ctx: Context<EndPoint>) endpoint : Doc list =
             [li [if endpoint = Profile then yield attr.``class`` "active"][a [attr.href (ctx.Link Profile)] [text "Profile"]];
              li [if endpoint = About then yield attr.``class`` "active"] [a [attr.href (ctx.Link About)] [text "About"]];
              li [if endpoint = Courses then yield attr.``class`` "active"] [a [attr.href (ctx.Link Courses)] [text "Courses"]];
-             button[attr.style "float:right"; on.click (fun _ _ -> Client.LogOutUser())][text "Log Out"]
+             li [on.click (fun _ _ -> Client.LogOutUser())][a [attr.href "#"] [text "Log Out"]]
             ]                    
 
     let MenuBar (ctx: Context<EndPoint>) endpoint =
@@ -62,12 +51,12 @@ module Templating =
 module Site =
     open WebSharper.UI.Html
    
-    let HomePage (ctx : Context<_>) =
+    let StartPage (ctx : Context<_>) =
         async {
             let! loggedIn = ctx.UserSession.GetLoggedInUser()
             let content =
                 match loggedIn with
-                | Some username ->
+                | Some _ ->
                     div [] [
                             h1 [] [text "Work in progress"]
                     ]
@@ -78,7 +67,7 @@ module Site =
                         div[attr.style "float:right; width:400px"][ h1[][text("Register")]
                                                                     client <@ Client.RegUser() @>]
                     ]
-            return! Templating.Main ctx EndPoint.Home "Home" [content]
+            return! Templating.Main ctx EndPoint.Start "Start" [content]
         }
 
     let AboutPage ctx =
@@ -104,7 +93,7 @@ module Site =
     let Main =
         Application.MultiPage (fun ctx endpoint ->
             match endpoint with
-            | EndPoint.Home -> HomePage ctx
+            | EndPoint.Start -> StartPage ctx
             | EndPoint.About -> AboutPage ctx
             | EndPoint.Profile -> ProfilePage ctx
             | EndPoint.Courses -> CoursesPage ctx
