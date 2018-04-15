@@ -39,17 +39,54 @@ module TeacherClient =
             Tasks: ListModel<Key, ToCheckItem>
         }
 
+    type StudentInfo = 
+        {
+            Name: string
+            Email: string
+            Git: string
+            Key: Key
+        }
+
+        static member Create (name: string) (email: string) (git: string) = 
+            { Key = Key.Fresh(); Name = name; Email = email; Git = git }
+
+        override this.ToString() =
+            this.Name + " " + this.Email + " " + this.Git
+
+    type CourseModel = 
+        {
+            Name: string
+            Students: ListModel<Key, StudentInfo>
+        }
+
+    let CreateCourseModel(name: string) = 
+        { Name = name; Students = ListModel.Create (fun item -> item.Key)[] }
+
+    let RenderCourse (m: CourseModel) (student: StudentInfo) = 
+        p [] [text m.Name]
+        tr [] [
+            td [] [
+                text student.ToString()
+            ]
+            td [] [
+                button [on.click (fun _ _ -> m.Students.Remove student)
+                ] [text "Remove"]
+            ]
+        ]
+
+    let CourseList m = 
+        m.Students.View
+        |> Doc.ConvertBy m.Students.Key (RenderCourse m)
+
     let CreateToCheckModel() = 
-        { Tasks = ListModel.Create (fun item -> item.Key) [] }
+        { Tasks = ListModel.Create (fun item -> item.Key)[] }
 
     (*Вот где-то тут нужно прикрутить бд*)
     let RenderTasks (m: ToCheckModel) (tochek: ToCheckItem) = 
         tr [] [
             (*Вывод информации о задании. На этом моменте задание нужно подгружать из бд*)
             td [] [
-                tochek.IsAccepted.View
-                |> View.Map (fun isAccepted -> text tochek.Info)
-                |> Doc.EmbedView
+                text tochek.Info
             ]
             (*Кнопка принятия задания. Видимо на этом моменте нужно говорить бд,что в таблице для проверки данной задачи нет*)
             td [] [
@@ -71,15 +108,15 @@ module TeacherClient =
         m.Tasks.View
         |> Doc.ConvertBy m.Tasks.Key (RenderTasks m)
 
-    let TeacherToCheck() =
+    let CheckTasks() =
         (*Создание списка для выведения на экран*)
         let m = CreateToCheckModel()
         div [] [ToCheckList m]
 
-    let TeacherToAdd() =
+    let AddNewTasks() =
         let taskInput = Var.Create ""
         let exerciseInput = Var.Create ""
-        let console = textarea [attr.cols "80"; attr.rows "20"; attr.name "requirement"] []
+        let requirement = textarea [attr.cols "80"; attr.rows "20"; attr.name "requirement"] []
         let taskField = Doc.Input [] taskInput
         let exerciseField = Doc.Input [] exerciseInput
         (*Прикрутить подгрузку курсов из бд. Хз как это делать))0))*)
@@ -90,6 +127,26 @@ module TeacherClient =
                 td [] [taskField]
                 td [] [courseSelect]
             ]
-            div [] [console]
+            div [] [requirement]
             button [] [text "Submit"]
+        ]
+
+    let CreateNewCourse() = 
+        let courseNameInput = Var.Create ""
+        let courseNameField = Doc.Input [] courseNameInput
+        let descriptionArea = textarea [attr.cols "80"; attr.rows "20"; attr.name "description"] []
+        div [] [
+            courseNameField
+            descriptionArea
+            button [] [text "Submit"]
+        ]
+
+    let ManageCourse() = 
+        let m = CreateCourseModel("testCourse")
+        div [] [
+            p [] [text m.Name]
+            div [] [CourseList m]
+        ]
+        div [] [
+            button [] [text "Close course"]
         ]
