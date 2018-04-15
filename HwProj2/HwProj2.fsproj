@@ -20,7 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Remoting.fs" />
-    <Compile Include="Client.fs" />
+    <Compile Include="RegClient.fs" />
+    <Compile Include="TeacherClient.fs" />
     <Compile Include="Site.fs" />
     <Compile Include="Startup.fs" />
     <Compile Include="Program.fs" />
