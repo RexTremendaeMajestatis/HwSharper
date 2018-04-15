@@ -42,19 +42,23 @@ module TeacherClient =
     let CreateToCheckModel() = 
         { Tasks = ListModel.Create (fun item -> item.Key) [] }
 
+    (*Вот где-то тут нужно прикрутить бд*)
     let RenderTasks (m: ToCheckModel) (tochek: ToCheckItem) = 
         tr [] [
+            (*Вывод информации о задании. На этом моменте задание нужно подгружать из бд*)
             td [] [
                 tochek.IsAccepted.View
                 |> View.Map (fun isAccepted -> text tochek.Info)
                 |> Doc.EmbedView
             ]
+            (*Кнопка принятия задания. Видимо на этом моменте нужно говорить бд,что в таблице для проверки данной задачи нет*)
             td [] [
                 button [on.click (fun _ _ -> tochek.IsAccepted.Value <- true
                                              tochek.IsChangesRequired.Value <- false
                                              m.Tasks.Remove tochek)
                 ] [text "Accept"]
             ]
+            (*Кнопка запроса изменений. Видимо на этом моменте нужно говорить бд, что в таблице для проверки данной задачи нет*)
             td [] [
                 button [on.click (fun _ _ -> tochek.IsChangesRequired.Value <- true
                                              tochek.IsAccepted.Value <- false
@@ -68,18 +72,24 @@ module TeacherClient =
         |> Doc.ConvertBy m.Tasks.Key (RenderTasks m)
 
     let TeacherToCheck() =
+        (*Создание списка для выведения на экран*)
         let m = CreateToCheckModel()
         div [] [ToCheckList m]
-
-    let rvInput = Var.Create ""
-    let submit = Submitter.Create (rvInput.View.Map Some) None
 
     let TeacherToAdd() =
         let taskInput = Var.Create ""
         let exerciseInput = Var.Create ""
+        let console = textarea [attr.cols "80"; attr.rows "20"; attr.name "requirement"] []
         let taskField = Doc.Input [] taskInput
         let exerciseField = Doc.Input [] exerciseInput
+        (*Прикрутить подгрузку курсов из бд. Хз как это делать))0))*)
+        let courseSelect = select [] []
         div [] [
-            div [attr.placeholder "Task name"] [taskField]
-            div [attr.placeholder "Exercise name"] [exerciseField]
+            tr [] [
+                td [] [exerciseField]
+                td [] [taskField]
+                td [] [courseSelect]
+            ]
+            div [] [console]
+            button [] [text "Submit"]
         ]
