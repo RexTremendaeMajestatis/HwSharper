@@ -143,12 +143,30 @@ module TeacherClient =
             descriptionArea
             button [] [text "Submit"]
         ]
-    (*Сюда из Site.fs нужно передать модель выбранного курса*)
-    let ManageCourse(m: CourseModel) = 
+        
+    (*управление конкретным выбранным курсом со списком студентов*)
+    let ManageCourse() = 
+        let m = CreateCourseModel("test")
+        let inviteInput = Var.Create ""
+        let inviteField = Doc.Input [] inviteInput
         div [] [
-            p [] [text m.Name]
-            div [] [CourseList m]
-        ]
-        div [] [
-            button [] [text "Close course"]
+            div [] [
+                (*Название курса*)
+                p [] [text m.Name]
+                (*Список студентов с возможностью изгнания их с курса*)
+                div [] [CourseList m]
+            ]
+            div [] [
+                button [] [text "Close course"]
+            ]
+            div [] [
+                p [] [text "Enter email"]
+                inviteField
+                (*отправить письмо с приглашением на почту*)
+                button [] [text "Invite to course"]
+            ]
+            div [] [
+                p [] [text "They want to join"]
+                (*список желающих*)
+            ]
         ]
