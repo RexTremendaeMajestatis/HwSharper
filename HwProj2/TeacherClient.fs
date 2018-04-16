@@ -116,7 +116,8 @@ module TeacherClient =
     let AddNewTasks() =
         let taskInput = Var.Create ""
         let exerciseInput = Var.Create ""
-        let requirement = textarea [attr.cols "80"; attr.rows "20"; attr.name "requirement"] []
+        let requirementInput = Var.Create ""
+        let requirement = Doc.InputArea [] requirementInput
         let taskField = Doc.Input [] taskInput
         let exerciseField = Doc.Input [] exerciseInput
         (*Прикрутить подгрузку курсов из бд. Хз как это делать))0))*)
@@ -128,13 +129,15 @@ module TeacherClient =
                 td [] [courseSelect]
             ]
             div [] [requirement]
+            (*нужно собрать из данных формы объект и отправить его в бд по щелчку кнопки*)
             button [] [text "Submit"]
         ]
 
     let CreateNewCourse() = 
         let courseNameInput = Var.Create ""
+        let descriptionInput = Var.Create ""
         let courseNameField = Doc.Input [] courseNameInput
-        let descriptionArea = textarea [attr.cols "80"; attr.rows "20"; attr.name "description"] []
+        let descriptionArea = Doc.InputArea [] descriptionInput
         div [] [
             courseNameField
             descriptionArea
@@ -143,6 +146,7 @@ module TeacherClient =
 
     let ManageCourse() = 
         let m = CreateCourseModel("testCourse")
+        (*тут нужно как то добавить народ, который набран на курс*)
         div [] [
             p [] [text m.Name]
             div [] [CourseList m]
