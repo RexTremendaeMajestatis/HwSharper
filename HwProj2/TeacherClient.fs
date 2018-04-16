@@ -1,4 +1,4 @@
-namespace Новая_папка1
+namespace HwProj2
 
 open WebSharper
 open WebSharper.JavaScript
