@@ -143,10 +143,8 @@ module TeacherClient =
             descriptionArea
             button [] [text "Submit"]
         ]
-
-    let ManageCourse() = 
-        let m = CreateCourseModel("testCourse")
-        (*тут нужно как то добавить народ, который набран на курс*)
+    (*Сюда из Site.fs нужно передать модель выбранного курса*)
+    let ManageCourse(m: CourseModel) = 
         div [] [
             p [] [text m.Name]
             div [] [CourseList m]
