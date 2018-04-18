@@ -7,7 +7,7 @@ open WebSharper.UI.Client
 open WebSharper.UI.Html
 
 [<JavaScript>]
-module CommonClient =
+module TeacherClient =
 
     type RealTaskItem = 
         {
@@ -92,20 +92,22 @@ module CommonClient =
         div [] [ 
             tr [] [
                 td [] [
+                    text tochek.Date
+                    text tochek.Name
                     text tochek.Info
                 ]
                 (*Кнопка принятия задания. Видимо на этом моменте нужно говорить бд,что в таблице для проверки данной задачи нет*)
                 td [] [
                     button [on.click (fun _ _ -> tochek.IsAccepted.Value <- true
-                                                tochek.IsChangesRequired.Value <- false
-                                                m.Tasks.Remove tochek)
+                                                 tochek.IsChangesRequired.Value <- false
+                                                 m.Tasks.Remove tochek)
                     ] [text "Accept"]
                 ]
                 (*Кнопка запроса изменений. Видимо на этом моменте нужно говорить бд, что в таблице для проверки данной задачи нет*)
                 td [] [
                     button [on.click (fun _ _ -> tochek.IsChangesRequired.Value <- true
-                                                tochek.IsAccepted.Value <- false
-                                                m.Tasks.Remove tochek)
+                                                 tochek.IsAccepted.Value <- false
+                                                 m.Tasks.Remove tochek)
                     ] [text "Require Changes"]
                 ]
             ]
@@ -136,7 +138,7 @@ module CommonClient =
             ]
         ]
     
-    let RenderCoursePeople (m: PeopleModel) (person: PersonItem) = 
+    let RenderCourseStudents (m: PeopleModel) (person: PersonItem) = 
         div [] [
             tr [] [
                 td [] [
@@ -148,7 +150,27 @@ module CommonClient =
             ]
         ]
 
-    let CoursePeopleList m 
+    let RenderCoursemates (m: PeopleModel) (person: PersonItem) = 
+        div [] [text person.Name]
+
+    let RenderToDo (m: TasksModel) (todo: TaskItem) =
+        div [] [
+            tr [] [
+                td [] [
+                    text todo.Date
+                    text todo.Name
+                    text todo.Info
+                ]
+                td [] [
+                    button [on.click (fun _ _ -> m.Tasks.Remove todo)] [text "Upload"]
+                ]
+            ]
+        ] 
+
+    let RenderCourses (m: CoursesModel) (course: CourseItem) = 
+        div [] [text course.Name]
+
+    let CoursePeopleList m =
         m.People.View
         |> Doc.ConvertBy m.People.Key (RenderCoursePeople m)
 
@@ -163,6 +185,18 @@ module CommonClient =
     let ToCheckList m = 
         m.Tasks.View
         |> Doc.ConvertBy m.Tasks.Key (RenderToCheck m)
+
+    let ToDoList m = 
+        m.Tasks.View
+        |> Doc.ConvertBy m.Tasks.Key (RenderToDo m)
+
+    let CoursesList m = 
+        m.Courses.View
+        |> Doc.ConvertBy m.Courses.Key (RenderCourses m)
+
+    let CoursematesList m = 
+        m.People.View
+        |> Doc.ConvertBy m.People.Key (RenderCoursemates m)
 
     let CheckTasks() =
         (*Создание списка для выведения на экран*)
@@ -197,7 +231,7 @@ module CommonClient =
         let courseYearField = Doc.Input [] courseYearInput
         div [] [
             div [] [courseNameField]
-            div [] [courseYearInput]
+            div [] [courseYearField]
             div [] [button [] [text "Create"]]
         ] 
 
@@ -213,3 +247,15 @@ module CommonClient =
             div [] [inviteField]
             div [] [button [] [text "Invite"]]
         ]
+
+    let DoTasks() = 
+        let m = CreateTasksModel()
+        div [] [ToDoList m]
+
+    let CoursesOverview() =
+        let m = CreateCoursesModel() 
+        div [] [CoursesList m]
+
+    let FollowCourse() = 
+        let m = CreatePeopleModel()
+        div [] [CoursematesList m]
