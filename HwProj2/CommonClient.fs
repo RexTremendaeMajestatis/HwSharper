@@ -124,7 +124,7 @@ module CommonClient =
             ]
         ]
 
-    let RenderCoursesToAppoitn (m: CoursesModel) (course: CourseItem) = 
+    let RenderCoursesToAppoint (m: CoursesModel) (course: CourseItem) = 
         div [] [
             tr [] [
                 td [] [
@@ -154,7 +154,7 @@ module CommonClient =
 
     let CoursesToAppoint m =
         m.Courses.View
-        |> Doc.ConvertBy m.Courses.Key (RenderCoursesToAppoitn m)
+        |> Doc.ConvertBy m.Courses.Key (RenderCoursesToAppoint m)
     
     let TasksToAppoint m =
         m.RealTasks.View
