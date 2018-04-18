@@ -9,7 +9,7 @@ open WebSharper.Forms
 open WebSharper.Forms.Bootstrap
 
 [<JavaScript>]
-module Client =
+module RegClient =
 
     let LogOutUser () =
         async{ do! Server.LogoutUser()

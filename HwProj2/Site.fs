@@ -30,7 +30,7 @@ module Templating =
             [li [if endpoint = Profile then yield attr.``class`` "active"][a [attr.href (ctx.Link Profile)] [text "Profile"]];
              li [if endpoint = About then yield attr.``class`` "active"] [a [attr.href (ctx.Link About)] [text "About"]];
              li [if endpoint = Courses then yield attr.``class`` "active"] [a [attr.href (ctx.Link Courses)] [text "Courses"]];
-             li [on.click (fun _ _ -> Client.LogOutUser())][a [attr.href "#"] [text "Log Out"]]
+             li [on.click (fun _ _ -> RegClient.LogOutUser())][a [attr.href "#"] [text "Log Out"]]
             ]                    
 
     let MenuBar (ctx: Context<EndPoint>) endpoint =
@@ -63,9 +63,9 @@ module Site =
                 | None ->
                     div [] [
                         div[attr.style "float:left; width:400px"][ h1[][text("Log In")]
-                                                                   client <@ Client.AnonUser() @>]
+                                                                   client <@ RegClient.AnonUser() @>]
                         div[attr.style "float:right; width:400px"][ h1[][text("Register")]
-                                                                    client <@ Client.RegUser() @>]
+                                                                    client <@ RegClient.RegUser() @>]
                     ]
             return! Templating.Main ctx EndPoint.Start "Start" [content]
         }
