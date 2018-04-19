@@ -1,19 +1,18 @@
 ﻿namespace HwProj2
 
 open WebSharper
-
+open DataManager.Models
 type LoginData = { 
-              User : string 
+              Email : string
               Password : string 
             }
 
 type RegisterData = 
     {
-        UserId: string
+        Role: bool
+        Email: string
         Password: string
         Fullname: string
-        Email: string
-        IsTeacher: bool
     }
 
 module Server =
@@ -22,23 +21,24 @@ module Server =
     [<Rpc>]
     let RegisterUser (regData : RegisterData) =
         let ctx = Web.Remoting.GetContext()
-        let reg = UserRegistry()
-        reg.Create(
-                   regData.UserId,
-                   regData.Password, 
-                   regData.Fullname, 
-                   regData.Email,
-                   regData.IsTeacher)
-        ctx.UserSession.LoginUser(regData.UserId, persistent = true) |> Async.Ignore
+        let success = AccountManager.CreateAccount (regData.Email,
+                                                    regData.Password, 
+                                                    regData.Fullname,
+                                                    regData.Role)
+        if success
+        then 
+            ctx.UserSession.LoginUser(regData.Email, persistent = true) |> Async.Ignore
+        else async.Return()
 
     [<Rpc>]
     let LoginUser (userData : LoginData) =
         let ctx = Web.Remoting.GetContext()
-        let log = UserRegistry()
-        let us = log.Search(userData.User, userData.Password)
-        if us
-        then ctx.UserSession.LoginUser(userData.User, persistent = true) |> Async.Ignore
-        else async.Return()
+        let isValid = AccountManager.ValidateUser(userData.Email, userData.Password)
+        if isValid
+        then 
+            ctx.UserSession.LoginUser (userData.Email, persistent = true) |> Async.Ignore
+        else 
+            async.Return()
 
     [<Rpc>]
     let LogoutUser () =

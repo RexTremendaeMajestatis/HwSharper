@@ -8,18 +8,13 @@ namespace DataManager
 {
     public class UserInfo
     {
+        public int Id;
         public string EmailAddress;
         public string Password;
+        public string Fullname;
     }
     public static class AccountManager
     {
-        public static List<UserInfo> GetUsers(HwProj_DBContext db)
-        {
-            var users = (from t in db.Teacher select new UserInfo() {EmailAddress = t.Email, Password = t.Password})
-                .Concat(from s in db.Student select new UserInfo() {EmailAddress = s.Email, Password = s.Password}).ToList();
-            return users;
-        }
-
         public static List<Teacher> GetTeachers(HwProj_DBContext db)
         {
             var teachers = db.Teacher.ToList();
@@ -31,6 +26,16 @@ namespace DataManager
             var students = db.Student.ToList();
             return students;
         }
+        
+        public static List<UserInfo> GetUsers(HwProj_DBContext db)
+        {
+            var students = db.Student.Select(user =>
+                new UserInfo() {Id = user.Id, EmailAddress = user.Email, Password = user.Password, Fullname = user.Fullname});
+            var teachers = db.Teacher.Select(user =>
+                new UserInfo() {Id = user.Id, EmailAddress = user.Email, Password = user.Password, Fullname = user.Fullname});
+            var users = students.Concat(teachers).ToList();
+            return users;
+        }
 
         public static bool CreateAccount(string email, string pass, string fullname, bool isTeacher)
         {
@@ -40,6 +45,7 @@ namespace DataManager
                     return false;
                 else
                 {
+                    var x = GetUsers(db);
                     if (isTeacher)
                     {
                         var newTeacher = new Teacher() {Email = email, Password = pass, Fullname = fullname};
