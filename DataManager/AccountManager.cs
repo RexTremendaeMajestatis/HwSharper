@@ -29,11 +29,8 @@ namespace DataManager
         
         public static List<UserInfo> GetUsers(HwProj_DBContext db)
         {
-            var students = db.Student.Select(user =>
-                new UserInfo() {Id = user.Id, EmailAddress = user.Email, Password = user.Password, Fullname = user.Fullname});
-            var teachers = db.Teacher.Select(user =>
-                new UserInfo() {Id = user.Id, EmailAddress = user.Email, Password = user.Password, Fullname = user.Fullname});
-            var users = students.Concat(teachers).ToList();
+            var users = (from t in db.Teacher select new UserInfo() { EmailAddress = t.Email, Password = t.Password })
+                .Concat(from s in db.Student select new UserInfo() { EmailAddress = s.Email, Password = s.Password }).ToList();
             return users;
         }
 

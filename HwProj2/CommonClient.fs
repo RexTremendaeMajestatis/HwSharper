@@ -172,7 +172,7 @@ module TeacherClient =
 
     let CoursePeopleList m =
         m.People.View
-        |> Doc.ConvertBy m.People.Key (RenderCoursePeople m)
+        |> Doc.ConvertBy m.People.Key (RenderCoursemates m)
 
     let CoursesToAppoint m =
         m.Courses.View
