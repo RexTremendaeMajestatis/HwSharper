@@ -26,9 +26,9 @@
  Validation=Forms&&Forms.Validation;
  Client.RegUser=function()
  {
-  function r(user,pass,name,email,isTeacher,submit)
+  function r(email,pass,name,isTeacher,submit)
   {
-   return Doc.Element("form",[],[Simple.InputWithError("Username",user,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),Simple.InputWithError("Name",name,submit.view),Simple.InputWithError("Email",email,submit.view),Controls.Radio("Teacher",List.ofArray([AttrProxy.Create("class","radio"),AttrProxy.Create("checked","checked")]),isTeacher,[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),Controls.Radio("Student",List.ofArray([AttrProxy.Create("class","radio")]),Var.Create$1(!isTeacher.Get()),[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),((function(a)
+   return Doc.Element("form",[],[Simple.InputWithError("Email",email,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),Simple.InputWithError("Name",name,submit.view),Controls.Radio("Teacher",List.ofArray([AttrProxy.Create("class","radio"),AttrProxy.Create("checked","checked")]),isTeacher,[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),Controls.Radio("Student",List.ofArray([AttrProxy.Create("class","radio")]),Var.Create$1(!isTeacher.Get()),[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),((function(a)
    {
     return(Controls.Button())(a);
    }("Register"))(List.ofArray([AttrProxy.Create("class","btn btn-primary")])))(function()
@@ -36,7 +36,7 @@
     submit.Trigger();
    }),Controls.ShowErrors([AttrProxy.Create("style","margin-top:1em;")],submit.view)]);
   }
-  return Form.Render(Runtime.Curried(r,6),Form.Run(function(regData)
+  return Form.Render(Runtime.Curried(r,5),Form.Run(function(regData)
   {
    var b;
    Concurrency.Start((b=null,Concurrency.Delay(function()
@@ -47,16 +47,15 @@
      return Concurrency.Return(null);
     });
    })),null);
-  },Form.WithSubmit(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Form.Return(Runtime.Curried(function(login,pass,name,email,isTeacher)
+  },Form.WithSubmit(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Form.Return(Runtime.Curried(function(email,pass,name,isTeacher)
   {
    return{
-    UserId:login,
-    Password:pass,
-    Fullname:name,
+    Role:isTeacher,
     Email:email,
-    IsTeacher:isTeacher
+    Password:pass,
+    Fullname:name
    };
-  },5)),Validation.IsNotEmpty("Enter an username",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))),Validation.IsNotEmpty("Enter a full name",Form.Yield(""))),Validation.IsNotEmpty("Enter an email",Form.Yield(""))),Form.Yield(false)))));
+  },4)),Validation.IsNotEmpty("Enter an email",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))),Validation.IsNotEmpty("Enter a full name",Form.Yield(""))),Form.Yield(false)))));
  };
  Client.AnonUser=function()
  {
@@ -86,7 +85,7 @@
    return function(pass)
    {
     return{
-     User:user,
+     Email:user,
      Password:pass
     };
    };
