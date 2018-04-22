@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataManager.Models
 {
-    public class TestTask
+    public partial class TestTask
     {
         public TestTask()
         {

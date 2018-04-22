@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using DataManager.Models;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
+using System.Timers;
 
 namespace DataManager
 {
-    public class UserInfo
-    {
-        public int Id;
-        public string EmailAddress;
-        public string Password;
-        public string Fullname;
-    }
+
     public static class AccountManager
     {
+        public class UserInfo
+        {
+            public long Id;
+            public string EmailAddress;
+            public string Password;
+            public string Fullname;
+        }
+        
         public static List<Teacher> GetTeachers(HwProj_DBContext db)
         {
             var teachers = db.Teacher.ToList();
@@ -29,8 +30,8 @@ namespace DataManager
         
         public static List<UserInfo> GetUsers(HwProj_DBContext db)
         {
-            var users = (from t in db.Teacher select new UserInfo() { EmailAddress = t.Email, Password = t.Password })
-                .Concat(from s in db.Student select new UserInfo() { EmailAddress = s.Email, Password = s.Password }).ToList();
+            var users = ((from t in db.Teacher select new UserInfo() { EmailAddress = t.Email, Password = t.Password, Fullname = t.Fullname, Id = t.Id})
+                .Concat(from s in db.Student select new UserInfo() { EmailAddress = s.Email, Password = s.Password, Fullname = s.Fullname, Id = s.Id })).ToList();
             return users;
         }
 
@@ -38,11 +39,10 @@ namespace DataManager
         {
             using (var db = new HwProj_DBContext())
             {
-                if (GetUsers(db).Any(user => user.EmailAddress == email))
+                if (db.Teacher.Any(user => user.Email == email) || db.Student.Any(user => user.Email == email))
                     return false;
                 else
                 {
-                    var x = GetUsers(db);
                     if (isTeacher)
                     {
                         var newTeacher = new Teacher() {Email = email, Password = pass, Fullname = fullname};
@@ -53,7 +53,6 @@ namespace DataManager
                         var newStudent = new Student() {Email = email, Password = pass, Fullname = fullname};
                         db.Student.Add(newStudent);
                     }
-
                     db.SaveChanges();
                     return true;
                 }
@@ -64,7 +63,10 @@ namespace DataManager
         {
             using (var db = new HwProj_DBContext())
             {
-                return GetUsers(db).Any(user => (user.EmailAddress == email) && (user.Password == pass));
+                var found = (GetTeachers(db).Any(user => user.Email == email && user.Password == pass) ||
+                             GetStudents(db).Any(user => user.Email == email && user.Password == pass));
+                DeleteUser("oihpio", "oihp", "oihp", "oihp", false);
+                return found;
             }
         }
 
@@ -114,6 +116,33 @@ namespace DataManager
                 } 
             else
                 return false;
+        }
+
+        //rewrite
+        public static void DeleteRelatedInfo(HwProj_DBContext db, int id, bool isTeacher)
+        {
+            if (isTeacher)
+            {
+                var relatedCourses = db.OngoingCourse.Where(c => c.TeacherId == id);
+                var relatedAssign = db.StudentCourse.Where(a => a.Course.TeacherId == id);
+                var relatedAnn = db.Announcement.Where(a => a.Lecture.Course.TeacherId == id);
+                var relatedLec = db.Lecture.Where(l => l.Course.TeacherId == id);
+                var relatecMat = db.Material.Where(l => l.Lecture.Course.TeacherId== id);
+                db.OngoingCourse.RemoveRange(relatedCourses);
+                db.StudentCourse.RemoveRange(relatedAssign);
+                db.Announcement.RemoveRange(relatedAnn);
+                db.Lecture.RemoveRange(relatedLec);
+                db.Material.RemoveRange(relatecMat);
+            }
+            else
+            {
+                var relatedHwSolutions = db.HomeworkSolution.Where(hw => hw.StudentId == id);
+                var relatedTestSolutions = db.TestSolution.Where(test => test.StudentId == id);
+                var relatedAssign = db.StudentCourse.Where(a => a.StudentId == id);
+                db.HomeworkSolution.RemoveRange(relatedHwSolutions);
+                db.TestSolution.RemoveRange(relatedTestSolutions);
+                db.StudentCourse.RemoveRange(relatedAssign);
+            }
         }
 
         public static bool DeleteUser(string email, string pass, string passAssert, string passRepeat, bool isTeacher)

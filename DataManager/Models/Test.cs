@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataManager.Models
 {
-    public class Test
+    public partial class Test
     {
         public Test()
         {
@@ -11,9 +11,8 @@ namespace DataManager.Models
         }
 
         public int Id { get; set; }
-        public int? TaskId { get; set; }
-        public int? CourseId { get; set; }
-        public DateTime? Date { get; set; }
+        public int TaskId { get; set; }
+        public int CourseId { get; set; }
 
         public Course Course { get; set; }
         public TestTask Task { get; set; }

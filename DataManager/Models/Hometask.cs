@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataManager.Models
 {
-    public class Hometask
+    public partial class Hometask
     {
         public Hometask()
         {

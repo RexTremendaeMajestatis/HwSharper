@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataManager.Models
 {
-    public class HwProj_DBContext : DbContext
+    public partial class HwProj_DBContext : DbContext
     {
         public virtual DbSet<Announcement> Announcement { get; set; }
         public virtual DbSet<Course> Course { get; set; }
@@ -24,7 +27,7 @@ namespace DataManager.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseNpgsql(@"Host=localhost;Database=HwProj_DB;Username=username;Password=pass");
             }
         }
@@ -40,6 +43,7 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Lecture)
                     .WithMany(p => p.Announcement)
                     .HasForeignKey(d => d.LectureId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("announcements_lectureid_fkey");
             });
 
@@ -62,8 +66,6 @@ namespace DataManager.Models
             modelBuilder.Entity<Homework>(entity =>
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("nextval('homework_id_seq'::regclass)");
-
-                entity.Property(e => e.Date).HasColumnType("date");
 
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.Homework)
@@ -108,6 +110,7 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.Lecture)
                     .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("lecture_coursetid_fkey");
             });
 
@@ -122,6 +125,7 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Lecture)
                     .WithMany(p => p.Material)
                     .HasForeignKey(d => d.LectureId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("materials_lectureid_fkey");
             });
 
@@ -136,11 +140,13 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.OngoingCourse)
                     .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ongoingcourse_courseid_fkey");
 
                 entity.HasOne(d => d.Teacher)
                     .WithMany(p => p.OngoingCourse)
                     .HasForeignKey(d => d.TeacherId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ongoingcourse_teacherid_fkey");
             });
 
@@ -195,16 +201,16 @@ namespace DataManager.Models
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("nextval('test_id_seq'::regclass)");
 
-                entity.Property(e => e.Date).HasColumnType("date");
-
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.Test)
                     .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("test_courseid_fkey");
 
                 entity.HasOne(d => d.Task)
                     .WithMany(p => p.Test)
                     .HasForeignKey(d => d.TaskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("test_taskid_fkey");
             });
 
@@ -224,9 +230,9 @@ namespace DataManager.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("testsolution_studentid_fkey");
 
-                entity.HasOne(d => d.Testk)
+                entity.HasOne(d => d.Test)
                     .WithMany(p => p.TestSolution)
-                    .HasForeignKey(d => d.TestkId)
+                    .HasForeignKey(d => d.TestId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("testsolution_testkid_fkey");
             });

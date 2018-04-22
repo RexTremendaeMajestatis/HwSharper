@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataManager.Models
 {
-    public class Teacher
+    public partial class Teacher
     {
         public Teacher()
         {

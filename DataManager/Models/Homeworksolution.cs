@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataManager.Models
 {
-    public class HomeworkSolution
+    public partial class HomeworkSolution
     {
         public int Id { get; set; }
         public int StudentId { get; set; }

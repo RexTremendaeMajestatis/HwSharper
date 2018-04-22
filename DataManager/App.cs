@@ -1,7 +1,7 @@
 ﻿using System;
-namespace HelloWorld
+namespace DataManager
 {
-    class Hello
+    class App
     {
         static void Main()
         {
