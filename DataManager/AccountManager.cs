@@ -150,14 +150,19 @@ namespace DataManager
             if(pass == passAssert && passAssert == passRepeat)
                 using (var db = new HwProj_DBContext())
                 {
+                    int id;
                     if (isTeacher)
                     {
                         var toDelete = db.Teacher.First(t => t.Email == email);
+                        id = db.Teacher.First(t => t.Email == email && t.Password == pass).Id;
+                        DeleteRelatedInfo(db, id, true);
                         db.Teacher.Remove(toDelete);
                     }
                     else
                     {
                         var toDelete = db.Student.First(s => s.Email == email);
+                        id = db.Student.First(s => s.Email == email && s.Password == pass).Id;
+                        DeleteRelatedInfo(db, id, false);
                         db.Student.Remove(toDelete);
                     }
                     db.SaveChanges();
