@@ -7,15 +7,7 @@ namespace DataManager
 {
 
     public static class AccountManager
-    {
-        public class UserInfo
-        {
-            public long Id;
-            public string EmailAddress;
-            public string Password;
-            public string Fullname;
-        }
-        
+    {      
         public static List<Teacher> GetTeachers(HwProj_DBContext db)
         {
             var teachers = db.Teacher.ToList();
@@ -26,13 +18,6 @@ namespace DataManager
         {
             var students = db.Student.ToList();
             return students;
-        }
-        
-        public static List<UserInfo> GetUsers(HwProj_DBContext db)
-        {
-            var users = ((from t in db.Teacher select new UserInfo() { EmailAddress = t.Email, Password = t.Password, Fullname = t.Fullname, Id = t.Id})
-                .Concat(from s in db.Student select new UserInfo() { EmailAddress = s.Email, Password = s.Password, Fullname = s.Fullname, Id = s.Id })).ToList();
-            return users;
         }
 
         public static bool CreateAccount(string email, string pass, string fullname, bool isTeacher)
@@ -65,7 +50,6 @@ namespace DataManager
             {
                 var found = (GetTeachers(db).Any(user => user.Email == email && user.Password == pass) ||
                              GetStudents(db).Any(user => user.Email == email && user.Password == pass));
-                DeleteUser("oihpio", "oihp", "oihp", "oihp", false);
                 return found;
             }
         }
@@ -82,8 +66,7 @@ namespace DataManager
                     db.SaveChanges();
                     return true;
                 }
-            else
-                return false;
+            return false;
         }
         
         public static bool ChangeEmail(string email, string pass, string passRepeat, string newEmail, bool isTeacher)
@@ -98,8 +81,7 @@ namespace DataManager
                     db.SaveChanges();
                     return true;
                 } 
-            else
-                return false;
+            return false;
         }
         
         public static bool ChangeName(string email, string pass, string passRepeat, string newName, bool isTeacher)
@@ -114,8 +96,7 @@ namespace DataManager
                     db.SaveChanges();
                     return true;
                 } 
-            else
-                return false;
+            return false;
         }
 
         //rewrite
@@ -145,31 +126,29 @@ namespace DataManager
             }
         }
 
-        public static bool DeleteUser(string email, string pass, string passAssert, string passRepeat, bool isTeacher)
+        public static bool DeleteUser(int userId, string passAssert, string passRepeat, bool isTeacher)
         {
-            if(pass == passAssert && passAssert == passRepeat)
-                using (var db = new HwProj_DBContext())
+            using (var db = new HwProj_DBContext())
+            {
+                if (passAssert == passRepeat)
                 {
-                    int id;
                     if (isTeacher)
                     {
-                        var toDelete = db.Teacher.First(t => t.Email == email);
-                        id = db.Teacher.First(t => t.Email == email && t.Password == pass).Id;
-                        DeleteRelatedInfo(db, id, true);
-                        db.Teacher.Remove(toDelete);
+                        var curUser = db.Teacher.Find(userId);
+                        DeleteRelatedInfo(db, userId, true);
+                        db.Teacher.Remove(curUser);
                     }
                     else
                     {
-                        var toDelete = db.Student.First(s => s.Email == email);
-                        id = db.Student.First(s => s.Email == email && s.Password == pass).Id;
-                        DeleteRelatedInfo(db, id, false);
-                        db.Student.Remove(toDelete);
+                        var curUser = db.Student.Find(userId);
+                        DeleteRelatedInfo(db, userId, false);
+                        db.Student.Remove(curUser);
                     }
                     db.SaveChanges();
                     return true;
-                } 
-            else
+                }
                 return false;
+            }
         }
         
     }
