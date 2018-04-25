@@ -13,7 +13,7 @@ namespace DataManager.Models
 
         public int Id { get; set; }
         public int CourseId { get; set; }
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; }
         public string GroupId { get; set; }
         public bool? Completed { get; set; }
 

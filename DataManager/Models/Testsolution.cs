@@ -6,7 +6,7 @@ namespace DataManager.Models
     public partial class TestSolution
     {
         public int Id { get; set; }
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public int TestId { get; set; }
         public int Status { get; set; }
         public string Url { get; set; }

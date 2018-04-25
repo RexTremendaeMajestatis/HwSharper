@@ -12,7 +12,6 @@ namespace DataManager.Models
             TestSolution = new HashSet<TestSolution>();
         }
 
-        public int Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string Fullname { get; set; }

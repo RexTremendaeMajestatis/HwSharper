@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -84,6 +82,8 @@ namespace DataManager.Models
 
                 entity.Property(e => e.Status).HasDefaultValueSql("0");
 
+                entity.Property(e => e.StudentId).IsRequired();
+
                 entity.Property(e => e.Url)
                     .IsRequired()
                     .HasColumnName("URL");
@@ -98,7 +98,7 @@ namespace DataManager.Models
                     .WithMany(p => p.HomeworkSolution)
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("homeworksolution_studentid_fkey");
+                    .HasConstraintName("HomeworkSolution_StudentId_fkey");
             });
 
             modelBuilder.Entity<Lecture>(entity =>
@@ -137,6 +137,8 @@ namespace DataManager.Models
 
                 entity.Property(e => e.GroupId).IsRequired();
 
+                entity.Property(e => e.TeacherId).IsRequired();
+
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.OngoingCourse)
                     .HasForeignKey(d => d.CourseId)
@@ -147,18 +149,14 @@ namespace DataManager.Models
                     .WithMany(p => p.OngoingCourse)
                     .HasForeignKey(d => d.TeacherId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ongoingcourse_teacherid_fkey");
+                    .HasConstraintName("OngoingCourse_TeacherId_fkey");
             });
 
             modelBuilder.Entity<Student>(entity =>
             {
-                entity.HasIndex(e => e.Email)
-                    .HasName("Student_Email_idx")
-                    .IsUnique();
+                entity.HasKey(e => e.Email);
 
-                entity.Property(e => e.Id).HasDefaultValueSql("nextval('student_id_seq'::regclass)");
-
-                entity.Property(e => e.Email).IsRequired();
+                entity.Property(e => e.Email).ValueGeneratedNever();
 
                 entity.Property(e => e.Fullname).IsRequired();
 
@@ -179,18 +177,14 @@ namespace DataManager.Models
                     .WithMany(p => p.StudentCourse)
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("studentcourse_studentid_fkey");
+                    .HasConstraintName("StudentCourse_StudentId_fkey");
             });
 
             modelBuilder.Entity<Teacher>(entity =>
             {
-                entity.HasIndex(e => e.Email)
-                    .HasName("Teacher_Email_idx")
-                    .IsUnique();
+                entity.HasKey(e => e.Email);
 
-                entity.Property(e => e.Id).HasDefaultValueSql("nextval('teacher_id_seq'::regclass)");
-
-                entity.Property(e => e.Email).IsRequired();
+                entity.Property(e => e.Email).ValueGeneratedNever();
 
                 entity.Property(e => e.Fullname).IsRequired();
 
@@ -220,6 +214,8 @@ namespace DataManager.Models
 
                 entity.Property(e => e.Status).HasDefaultValueSql("1");
 
+                entity.Property(e => e.StudentId).IsRequired();
+
                 entity.Property(e => e.Url)
                     .IsRequired()
                     .HasColumnName("URL");
@@ -228,7 +224,7 @@ namespace DataManager.Models
                     .WithMany(p => p.TestSolution)
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("testsolution_studentid_fkey");
+                    .HasConstraintName("TestSolution_StudentId_fkey");
 
                 entity.HasOne(d => d.Test)
                     .WithMany(p => p.TestSolution)
@@ -275,14 +271,6 @@ namespace DataManager.Models
                 .HasMax(2147483647);
 
             modelBuilder.HasSequence("ongoingcourse_id_seq")
-                .HasMin(1)
-                .HasMax(2147483647);
-
-            modelBuilder.HasSequence("student_id_seq")
-                .HasMin(1)
-                .HasMax(2147483647);
-
-            modelBuilder.HasSequence("teacher_id_seq")
                 .HasMin(1)
                 .HasMax(2147483647);
 

@@ -7,15 +7,15 @@ namespace DataManager
 {
     public class TestSolutionManager
     {
-        public static void AddSolution(int studentId, int testId, string url)
+        public static void AddSolution(string studentEmail, int testId, string url)
         {
             using (var db = new HwProj_DBContext())
             {
-                var relatedStudent = db.Student.First(s => s.Id == studentId);
+                var relatedStudent = db.Student.First(s => s.Email == studentEmail);
                 var relatedTest = db.Test.First(test => test.Id == testId);
                 var toAdd = new TestSolution()
                 {
-                    StudentId = studentId,
+                    StudentId = studentEmail,
                     TestId = testId,
                     Url = url,
                     Test = relatedTest,

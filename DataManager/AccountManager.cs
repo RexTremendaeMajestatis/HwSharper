@@ -2,22 +2,40 @@
 using DataManager.Models;
 using System.Linq;
 using System.Timers;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DataManager
 {
 
     public static class AccountManager
     {      
-        public static List<Teacher> GetTeachers(HwProj_DBContext db)
+        
+        private static IEnumerable<Teacher> GetTeachers(HwProj_DBContext db)
         {
-            var teachers = db.Teacher.ToList();
+            var teachers = db.Teacher.AsEnumerable();
             return teachers;
         }
 
-        public static List<Student> GetStudents(HwProj_DBContext db)
+        private static IEnumerable<Student> GetStudents(HwProj_DBContext db)
         {
-            var students = db.Student.ToList();
+            var students = db.Student.AsEnumerable();
             return students;
+        }
+
+        public static bool IsTeacher(string email)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                return GetTeachers(db).Any(user => user.Email == email);
+            }
+        }
+        
+        public static bool IsStudent(string email)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                return GetStudents(db).Any(user => user.Email == email);
+            }
         }
 
         public static bool CreateAccount(string email, string pass, string fullname, bool isTeacher)
@@ -26,21 +44,18 @@ namespace DataManager
             {
                 if (db.Teacher.Any(user => user.Email == email) || db.Student.Any(user => user.Email == email))
                     return false;
+                if (isTeacher)
+                {
+                    var newTeacher = new Teacher() {Email = email, Password = pass, Fullname = fullname};
+                    db.Teacher.Add(newTeacher);
+                }
                 else
                 {
-                    if (isTeacher)
-                    {
-                        var newTeacher = new Teacher() {Email = email, Password = pass, Fullname = fullname};
-                        db.Teacher.Add(newTeacher);
-                    }
-                    else
-                    {
-                        var newStudent = new Student() {Email = email, Password = pass, Fullname = fullname};
-                        db.Student.Add(newStudent);
-                    }
-                    db.SaveChanges();
-                    return true;
+                    var newStudent = new Student() {Email = email, Password = pass, Fullname = fullname};
+                    db.Student.Add(newStudent);
                 }
+                db.SaveChanges();
+                return true;
             }
         }
 
@@ -54,61 +69,67 @@ namespace DataManager
             }
         }
 
-        public static bool ChangePassword(string email, string pass, string passRepeat, string newPass, bool isTeacher)
+        public static bool ChangePassword(string email, string curPass, string passRepeat, string newPass)
         {
-            if (pass == passRepeat)
-                using (var db = new HwProj_DBContext())
-                {
-                    if (isTeacher)
-                        db.Teacher.First(t => t.Email == email).Password = newPass;
-                    else
-                        db.Student.First(s => s.Email == email).Password = newPass;
-                    db.SaveChanges();
-                    return true;
-                }
-            return false;
+            if (curPass != passRepeat)
+                return false;
+            using (var db = new HwProj_DBContext())
+            {
+                if (db.Teacher.Any(t => t.Email == email && t.Password == curPass))
+                    db.Teacher.First(t => t.Email == email).Password = newPass;
+                else if (db.Student.Any(t => t.Email == email && t.Password == curPass))
+                    db.Student.First(s => s.Email == email).Password = newPass;
+                else 
+                    return false;
+                db.SaveChanges();
+                return true;
+            }
         }
         
-        public static bool ChangeEmail(string email, string pass, string passRepeat, string newEmail, bool isTeacher)
+        public static bool ChangeEmail(string email, string curPass, string passRepeat, string newEmail)
         {
-            if(pass == passRepeat)
-                using (var db = new HwProj_DBContext())
-                {
-                    if (isTeacher)
-                        db.Teacher.First(t => t.Email == email).Email = newEmail;
-                    else
-                        db.Student.First(s => s.Email == email).Email = newEmail;
-                    db.SaveChanges();
-                    return true;
-                } 
-            return false;
+            if (curPass != passRepeat)
+                return false;
+            using (var db = new HwProj_DBContext())
+            {
+                if (db.Teacher.Any(t => t.Email == email && t.Password == curPass))
+                    db.Teacher.First(t => t.Email == email).Password = newEmail;
+                else if (db.Student.Any(t => t.Email == email && t.Password == curPass))
+                    db.Student.First(s => s.Email == email).Password = newEmail;
+                else 
+                    return false;
+                db.SaveChanges();
+                return true;
+            }
         }
         
-        public static bool ChangeName(string email, string pass, string passRepeat, string newName, bool isTeacher)
+        public static bool ChangeName(string email, string curPass, string passRepeat, string newName)
         {
-            if(pass == passRepeat)
-                using (var db = new HwProj_DBContext())
-                {
-                    if (isTeacher)
-                        db.Teacher.First(t => t.Email == email).Fullname = newName;
-                    else
-                        db.Student.First(s => s.Email == email).Email = newName;
-                    db.SaveChanges();
-                    return true;
-                } 
-            return false;
+            if (curPass != passRepeat)
+                return false;
+            using (var db = new HwProj_DBContext())
+            {
+                if (db.Teacher.Any(t => t.Email == email && t.Password == curPass))
+                    db.Teacher.First(t => t.Email == email).Password = newName;
+                else if (db.Student.Any(t => t.Email == email && t.Password == curPass))
+                    db.Student.First(s => s.Email == email).Password = newName;
+                else 
+                    return false;
+                db.SaveChanges();
+                return true;
+            }
         }
 
         //rewrite
-        public static void DeleteRelatedInfo(HwProj_DBContext db, int id, bool isTeacher)
+        public static void DeleteRelatedInfo(HwProj_DBContext db, string email)
         {
-            if (isTeacher)
+            if (db.Teacher.Any(t => t.Email == email))
             {
-                var relatedCourses = db.OngoingCourse.Where(c => c.TeacherId == id);
-                var relatedAssign = db.StudentCourse.Where(a => a.Course.TeacherId == id);
-                var relatedAnn = db.Announcement.Where(a => a.Lecture.Course.TeacherId == id);
-                var relatedLec = db.Lecture.Where(l => l.Course.TeacherId == id);
-                var relatecMat = db.Material.Where(l => l.Lecture.Course.TeacherId== id);
+                var relatedCourses = db.OngoingCourse.Where(c => c.TeacherId == email);
+                var relatedAssign = db.StudentCourse.Where(a => a.Course.TeacherId == email);
+                var relatedAnn = db.Announcement.Where(a => a.Lecture.Course.TeacherId == email);
+                var relatedLec = db.Lecture.Where(l => l.Course.TeacherId == email);
+                var relatecMat = db.Material.Where(l => l.Lecture.Course.TeacherId== email);
                 db.OngoingCourse.RemoveRange(relatedCourses);
                 db.StudentCourse.RemoveRange(relatedAssign);
                 db.Announcement.RemoveRange(relatedAnn);
@@ -117,37 +138,36 @@ namespace DataManager
             }
             else
             {
-                var relatedHwSolutions = db.HomeworkSolution.Where(hw => hw.StudentId == id);
-                var relatedTestSolutions = db.TestSolution.Where(test => test.StudentId == id);
-                var relatedAssign = db.StudentCourse.Where(a => a.StudentId == id);
+                var relatedHwSolutions = db.HomeworkSolution.Where(hw => hw.StudentId == email);
+                var relatedTestSolutions = db.TestSolution.Where(test => test.StudentId == email);
+                var relatedAssign = db.StudentCourse.Where(a => a.StudentId == email);
                 db.HomeworkSolution.RemoveRange(relatedHwSolutions);
                 db.TestSolution.RemoveRange(relatedTestSolutions);
                 db.StudentCourse.RemoveRange(relatedAssign);
             }
         }
 
-        public static bool DeleteUser(int userId, string passAssert, string passRepeat, bool isTeacher)
+        public static bool DeleteUser(string email, string passAssert, string passRepeat)
         {
             using (var db = new HwProj_DBContext())
             {
-                if (passAssert == passRepeat)
+                if (passAssert != passRepeat)
+                    return false;
+                
+                if (db.Teacher.Any(t => t.Email == email))
                 {
-                    if (isTeacher)
-                    {
-                        var curUser = db.Teacher.Find(userId);
-                        DeleteRelatedInfo(db, userId, true);
-                        db.Teacher.Remove(curUser);
-                    }
-                    else
-                    {
-                        var curUser = db.Student.Find(userId);
-                        DeleteRelatedInfo(db, userId, false);
-                        db.Student.Remove(curUser);
-                    }
-                    db.SaveChanges();
-                    return true;
+                    var curUser = db.Teacher.Find(email);
+                    DeleteRelatedInfo(db, email);
+                    db.Teacher.Remove(curUser);
                 }
-                return false;
+                else
+                {
+                    var curUser = db.Student.Find(email);
+                    DeleteRelatedInfo(db, email);
+                    db.Student.Remove(curUser);
+                }
+                db.SaveChanges();
+                return true;
             }
         }
         

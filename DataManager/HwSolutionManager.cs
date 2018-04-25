@@ -7,15 +7,15 @@ namespace DataManager
 {
     public class HwSolutionManager
     {
-        public static void AddSolution(int studentId, int hwId, string url)
+        public static void AddSolution(string studentEmail, int hwId, string url)
         {
             using (var db = new HwProj_DBContext())
             {
-                var relatedStudent = db.Student.First(s => s.Id == studentId);
+                var relatedStudent = db.Student.First(s => s.Email == studentEmail);
                 var relatedHw = db.Homework.First(hw => hw.Id == hwId);
                 var toAdd = new HomeworkSolution()
                 {
-                    StudentId = studentId,
+                    StudentId = studentEmail,
                     HomeworkId = hwId,
                     Url = url,
                     Homework = relatedHw,

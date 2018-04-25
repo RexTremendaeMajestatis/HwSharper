@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime;
+using System.Collections.Generic;
 using DataManager.Models;
 
 namespace DataManager
@@ -10,18 +12,18 @@ namespace DataManager
         {
             
         }
-        public static void AddNewOngoingCourse(int teacherId, int courseId, string group, string title)
+        public static void AddNewOngoingCourse(string teacherEmail, int courseId, string group, string title)
         {
             using (var db = new HwProj_DBContext())
             {
                 var relatedCourse = 
                     db.Course.First(c => c.Title == title);
-                var teacher = db.Teacher.First(t => t.Id == teacherId);
+                var teacher = db.Teacher.First(t => t.Email == teacherEmail);
                 var course = db.Course.First(c => c.Id == courseId);
                 var toAdd =
                     new OngoingCourse()
                     {
-                        TeacherId = teacherId,
+                        TeacherId = teacherEmail,
                         CourseId = courseId,
                         GroupId = group,
                         Course = course,
@@ -54,15 +56,15 @@ namespace DataManager
             }
         }
 
-        public static void AssignToCourse(int studentId, int courseId)
+        public static void AssignToCourse(string studentEmail, int courseId)
         {
             using (var db = new HwProj_DBContext())
             {
-                var targetSt = db.Student.Find(studentId);
+                var targetSt = db.Student.Find(studentEmail);
                 var targetCourse = db.OngoingCourse.Find(courseId);
                 var toAdd = new StudentCourse()
                 {
-                    StudentId = studentId,
+                    StudentId = studentEmail,
                     CourseId = courseId,
                     Course = targetCourse,
                     Student = targetSt
@@ -71,6 +73,15 @@ namespace DataManager
                 targetCourse.StudentCourse.Add(toAdd);
                 db.Add(toAdd);
                 db.SaveChanges();
+            }
+        }
+
+        public static IEnumerable<Student> GetAllStudentsOnCourse(int courseId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var students = db.Student.Where(s => s.StudentCourse.Any(sc => sc.CourseId == courseId)).AsEnumerable();
+                return students;
             }
         }
 
