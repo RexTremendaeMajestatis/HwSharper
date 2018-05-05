@@ -25,7 +25,7 @@ namespace DataManager.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseNpgsql(@"Host=localhost;Database=HwProj_DB;Username=username;Password=pass");
             }
         }
@@ -211,7 +211,6 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Test)
                     .WithMany(p => p.TestSolution)
                     .HasForeignKey(d => d.TestId)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("testsolution_testkid_fkey");
             });
 
