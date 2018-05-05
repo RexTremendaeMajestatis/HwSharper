@@ -120,33 +120,6 @@ namespace DataManager
             }
         }
 
-        //rewrite
-        public static void DeleteRelatedInfo(HwProj_DBContext db, string email)
-        {
-            if (db.Teacher.Any(t => t.Email == email))
-            {
-                var relatedCourses = db.OngoingCourse.Where(c => c.TeacherId == email);
-                var relatedAssign = db.StudentCourse.Where(a => a.Course.TeacherId == email);
-                var relatedAnn = db.Announcement.Where(a => a.Lecture.Course.TeacherId == email);
-                var relatedLec = db.Lecture.Where(l => l.Course.TeacherId == email);
-                var relatecMat = db.Material.Where(l => l.Lecture.Course.TeacherId== email);
-                db.OngoingCourse.RemoveRange(relatedCourses);
-                db.StudentCourse.RemoveRange(relatedAssign);
-                db.Announcement.RemoveRange(relatedAnn);
-                db.Lecture.RemoveRange(relatedLec);
-                db.Material.RemoveRange(relatecMat);
-            }
-            else
-            {
-                var relatedHwSolutions = db.HomeworkSolution.Where(hw => hw.StudentId == email);
-                var relatedTestSolutions = db.TestSolution.Where(test => test.StudentId == email);
-                var relatedAssign = db.StudentCourse.Where(a => a.StudentId == email);
-                db.HomeworkSolution.RemoveRange(relatedHwSolutions);
-                db.TestSolution.RemoveRange(relatedTestSolutions);
-                db.StudentCourse.RemoveRange(relatedAssign);
-            }
-        }
-
         public static bool DeleteUser(string email, string passAssert, string passRepeat)
         {
             using (var db = new HwProj_DBContext())
@@ -154,18 +127,18 @@ namespace DataManager
                 if (passAssert != passRepeat)
                     return false;
                 
-                if (db.Teacher.Any(t => t.Email == email))
+                if (db.Teacher.Any(t => t.Email == email && t.Password == passAssert))
                 {
                     var curUser = db.Teacher.Find(email);
-                    DeleteRelatedInfo(db, email);
                     db.Teacher.Remove(curUser);
                 }
-                else
+                else if (db.Student.Any(s => s.Email == email && s.Password == passAssert))
                 {
                     var curUser = db.Student.Find(email);
-                    DeleteRelatedInfo(db, email);
                     db.Student.Remove(curUser);
                 }
+                else
+                    return false;
                 db.SaveChanges();
                 return true;
             }

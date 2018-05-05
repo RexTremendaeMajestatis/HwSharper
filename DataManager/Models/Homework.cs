@@ -11,8 +11,8 @@ namespace DataManager.Models
         }
 
         public int Id { get; set; }
-        public int? TaskId { get; set; }
-        public int? CourseId { get; set; }
+        public int TaskId { get; set; }
+        public int CourseId { get; set; }
 
         public Course Course { get; set; }
         public Hometask Task { get; set; }

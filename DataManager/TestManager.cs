@@ -23,19 +23,12 @@ namespace DataManager
                 db.SaveChanges();
             }
         }
-        
-        public static void DeleteRelatedInfo(HwProj_DBContext db, int id)
-        {
-            var relatedSolutions = db.TestSolution.Where(s => s.Test.TaskId == id);
-            db.TestSolution.RemoveRange(relatedSolutions);
-        }
              
         public static void DeleteTest(int testId)
         {
             using (var db = new HwProj_DBContext())
             {
                 var toDelete = db.Test.First(task => task.Id == testId);
-                DeleteRelatedInfo(db, testId);
                 db.Test.Remove(toDelete);
                 db.SaveChanges();
             }

@@ -38,8 +38,6 @@ namespace DataManager
         {
             var course = db.OngoingCourse.First(c => c.Id == id);
             var relatedLec = db.Lecture.Where(l => l.CourseId == id);
-            foreach (var lec in relatedLec)
-                LecturesManager.DeleteRelatedInfo(db, lec.Id);
             var relatedAssign = db.StudentCourse.Where(sc => sc.CourseId == id);
             db.StudentCourse.RemoveRange(relatedAssign);
             
@@ -80,8 +78,8 @@ namespace DataManager
         {
             using (var db = new HwProj_DBContext())
             {
-                var students = db.Student.Where(s => s.StudentCourse.Any(sc => sc.CourseId == courseId)).AsEnumerable();
-                return students;
+               var students = db.Student.Where(s => s.StudentCourse.Any(sc => sc.CourseId == courseId)).AsEnumerable();
+               return students;
             }
         }
 

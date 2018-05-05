@@ -34,15 +34,14 @@ namespace DataManager.Models
         {
             modelBuilder.Entity<Announcement>(entity =>
             {
-                entity.Property(e => e.Id).HasDefaultValueSql("nextval('announcements_id_seq'::regclass)");
+                entity.Property(e => e.Id).HasDefaultValueSql("nextval('announcement_id_seq'::regclass)");
 
                 entity.Property(e => e.Message).IsRequired();
 
                 entity.HasOne(d => d.Lecture)
                     .WithMany(p => p.Announcement)
                     .HasForeignKey(d => d.LectureId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("announcements_lectureid_fkey");
+                    .HasConstraintName("announcement_lectureid_fkey");
             });
 
             modelBuilder.Entity<Course>(entity =>
@@ -84,21 +83,17 @@ namespace DataManager.Models
 
                 entity.Property(e => e.StudentId).IsRequired();
 
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasColumnName("URL");
+                entity.Property(e => e.Url).IsRequired();
 
                 entity.HasOne(d => d.Homework)
                     .WithMany(p => p.HomeworkSolution)
                     .HasForeignKey(d => d.HomeworkId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("homeworksolution_homeworkid_fkey");
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.HomeworkSolution)
                     .HasForeignKey(d => d.StudentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("HomeworkSolution_StudentId_fkey");
+                    .HasConstraintName("homeworksolution_studentid_fkey");
             });
 
             modelBuilder.Entity<Lecture>(entity =>
@@ -110,23 +105,19 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.Lecture)
                     .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("lecture_coursetid_fkey");
+                    .HasConstraintName("lecture_courseid_fkey");
             });
 
             modelBuilder.Entity<Material>(entity =>
             {
-                entity.Property(e => e.Id).HasDefaultValueSql("nextval('materials_id_seq'::regclass)");
+                entity.Property(e => e.Id).HasDefaultValueSql("nextval('material_id_seq'::regclass)");
 
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasColumnName("URL");
+                entity.Property(e => e.Url).IsRequired();
 
                 entity.HasOne(d => d.Lecture)
                     .WithMany(p => p.Material)
                     .HasForeignKey(d => d.LectureId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("materials_lectureid_fkey");
+                    .HasConstraintName("material_lectureid_fkey");
             });
 
             modelBuilder.Entity<OngoingCourse>(entity =>
@@ -142,14 +133,12 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.OngoingCourse)
                     .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ongoingcourse_courseid_fkey");
 
                 entity.HasOne(d => d.Teacher)
                     .WithMany(p => p.OngoingCourse)
                     .HasForeignKey(d => d.TeacherId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("OngoingCourse_TeacherId_fkey");
+                    .HasConstraintName("ongoingcourse_teacherid_fkey");
             });
 
             modelBuilder.Entity<Student>(entity =>
@@ -170,14 +159,12 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.StudentCourse)
                     .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("studentcourse_courseid_fkey");
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.StudentCourse)
                     .HasForeignKey(d => d.StudentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("StudentCourse_StudentId_fkey");
+                    .HasConstraintName("studentcourse_studentid_fkey");
             });
 
             modelBuilder.Entity<Teacher>(entity =>
@@ -198,13 +185,11 @@ namespace DataManager.Models
                 entity.HasOne(d => d.Course)
                     .WithMany(p => p.Test)
                     .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("test_courseid_fkey");
 
                 entity.HasOne(d => d.Task)
                     .WithMany(p => p.Test)
                     .HasForeignKey(d => d.TaskId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("test_taskid_fkey");
             });
 
@@ -212,24 +197,21 @@ namespace DataManager.Models
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("nextval('testsolution_id_seq'::regclass)");
 
-                entity.Property(e => e.Status).HasDefaultValueSql("1");
+                entity.Property(e => e.Status).HasDefaultValueSql("0");
 
                 entity.Property(e => e.StudentId).IsRequired();
 
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasColumnName("URL");
+                entity.Property(e => e.Url).IsRequired();
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.TestSolution)
                     .HasForeignKey(d => d.StudentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("TestSolution_StudentId_fkey");
+                    .HasConstraintName("testsolution_studentid_fkey");
 
                 entity.HasOne(d => d.Test)
                     .WithMany(p => p.TestSolution)
                     .HasForeignKey(d => d.TestId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("testsolution_testkid_fkey");
             });
 
@@ -242,7 +224,7 @@ namespace DataManager.Models
                 entity.Property(e => e.Title).IsRequired();
             });
 
-            modelBuilder.HasSequence("announcements_id_seq")
+            modelBuilder.HasSequence("announcement_id_seq")
                 .HasMin(1)
                 .HasMax(2147483647);
 
@@ -266,7 +248,7 @@ namespace DataManager.Models
                 .HasMin(1)
                 .HasMax(2147483647);
 
-            modelBuilder.HasSequence("materials_id_seq")
+            modelBuilder.HasSequence("material_id_seq")
                 .HasMin(1)
                 .HasMax(2147483647);
 

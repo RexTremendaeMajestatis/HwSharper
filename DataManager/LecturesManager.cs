@@ -22,20 +22,11 @@ namespace DataManager
             }
         }
 
-        public static void DeleteRelatedInfo(HwProj_DBContext db, int id)
-        {
-            var relatedAnnouncements = db.Announcement.Where(a => a.LectureId == id);
-            var relatedMaterials = db.Material.Where(m => m.LectureId == id);
-            db.RemoveRange(relatedAnnouncements);
-            db.RemoveRange(relatedMaterials);
-        }
-
         public static void DeleteLecture(int lecId)
         {
             using (var db = new HwProj_DBContext())
             {
                 var toDelete = db.Lecture.First(l => l.Id == lecId);
-                DeleteRelatedInfo(db, lecId);
                 db.Remove(toDelete);
                 db.SaveChanges();
             }
