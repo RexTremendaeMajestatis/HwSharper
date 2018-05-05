@@ -5,6 +5,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HwProj2", "HwProj2\HwProj2.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManager", "DataManager\DataManager.csproj", "{96EE7E4D-F603-462D-9BCB-7B6E7C4EFBFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTesting", "DbTesting\DbTesting.csproj", "{6BA5CC22-FA98-45DC-B1BE-5D9F70211AC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{96EE7E4D-F603-462D-9BCB-7B6E7C4EFBFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96EE7E4D-F603-462D-9BCB-7B6E7C4EFBFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96EE7E4D-F603-462D-9BCB-7B6E7C4EFBFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BA5CC22-FA98-45DC-B1BE-5D9F70211AC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA5CC22-FA98-45DC-B1BE-5D9F70211AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BA5CC22-FA98-45DC-B1BE-5D9F70211AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA5CC22-FA98-45DC-B1BE-5D9F70211AC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

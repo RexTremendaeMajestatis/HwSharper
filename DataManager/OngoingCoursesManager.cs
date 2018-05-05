@@ -34,21 +34,11 @@ namespace DataManager
             }
         }
 
-        public static void DeleteRelatedInfo(HwProj_DBContext db, int id)
-        {
-            var course = db.OngoingCourse.First(c => c.Id == id);
-            var relatedLec = db.Lecture.Where(l => l.CourseId == id);
-            var relatedAssign = db.StudentCourse.Where(sc => sc.CourseId == id);
-            db.StudentCourse.RemoveRange(relatedAssign);
-            
-        }
-
         public static void DeleteOngoingCourse(int courseId)
         {
             using (var db = new HwProj_DBContext())
             {
                 var toDelete = db.OngoingCourse.First(course => course.Id == courseId);
-                DeleteRelatedInfo(db, courseId);
                 db.OngoingCourse.Remove(toDelete);
                 db.SaveChanges();
             }
