@@ -18,15 +18,15 @@ module RegClient =
 
 
     let AnonUser () =
-        Form.Return(fun user pass -> { Email = user; Password = pass })
+        Form.Return(fun user pass -> user, pass)
         <*> (Form.Yield ""
              |> Validation.IsNotEmpty "Enter an username")
         <*> (Form.Yield ""
              |> Validation.IsNotEmpty "Enter a password")
         |> Form.WithSubmit
-        |> Form.Run (fun userData ->
+        |> Form.Run (fun (user, pass) ->
             async {
-                do! Server.LoginUser userData
+                do! Server.LoginUser user pass
                 return JS.Window.Location.Reload()
             } |> Async.Start
         )
@@ -40,7 +40,7 @@ module RegClient =
          
 
     let RegUser () =
-        Form.Return(fun login pass name email isTeacher -> { Role = isTeacher; Email = email; Password = pass; Fullname = name;})
+        Form.Return(fun login pass name email isTeacher -> email, pass, name, isTeacher)
         <*> (Form.Yield "" 
              |> Validation.IsNotEmpty "Enter an username")
         <*> (Form.Yield ""
@@ -51,9 +51,9 @@ module RegClient =
              |> Validation.IsNotEmpty "Enter an email")
         <*> Form.Yield false
         |> Form.WithSubmit
-        |> Form.Run (fun regData ->
+        |> Form.Run (fun (email, pass, name, isTeacher) ->
             async {
-                do! Server.RegisterUser regData
+                do! Server.RegisterUser email pass name isTeacher
                 return JS.Window.Location.Reload()
             } |> Async.Start
         )

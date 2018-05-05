@@ -2,41 +2,29 @@
 
 open WebSharper
 open DataManager.Models
-type LoginData = { 
-              Email : string
-              Password : string 
-            }
-
-type RegisterData = 
-    {
-        Role: bool
-        Email: string
-        Password: string
-        Fullname: string
-    }
 
 module Server =
     open DataManager
 
     [<Rpc>]
-    let RegisterUser (regData : RegisterData) =
+    let RegisterUser email password fullname role =
         let ctx = Web.Remoting.GetContext()
-        let success = AccountManager.CreateAccount (regData.Email,
-                                                    regData.Password, 
-                                                    regData.Fullname,
-                                                    regData.Role)
+        let success = AccountManager.CreateAccount (email,
+                                                    password, 
+                                                    fullname,
+                                                    role)
         if success
         then 
-            ctx.UserSession.LoginUser(regData.Email, persistent = true) |> Async.Ignore
+            ctx.UserSession.LoginUser(email, persistent = true) |> Async.Ignore
         else async.Return()
 
     [<Rpc>]
-    let LoginUser (userData : LoginData) =
+    let LoginUser email password =
         let ctx = Web.Remoting.GetContext()
-        let isValid = AccountManager.ValidateUser(userData.Email, userData.Password)
+        let isValid = AccountManager.ValidateUser(email, password)
         if isValid
         then 
-            ctx.UserSession.LoginUser (userData.Email, persistent = true) |> Async.Ignore
+            ctx.UserSession.LoginUser (email, persistent = true) |> Async.Ignore
         else 
             async.Return()
 
