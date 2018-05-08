@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using DataManager.Models;
 
 namespace DataManager
@@ -12,15 +10,14 @@ namespace DataManager
             using (var db = new HwProj_DBContext())
             {
                 var relatedStudent = db.Student.First(s => s.Email == studentEmail);
-                var relatedTest = db.Test.First(test => test.Id == testId);
-                var toAdd = new TestSolution()
-                {
-                    StudentId = studentEmail,
-                    TestId = testId,
-                    Url = url,
-                    Test = relatedTest,
-                    Student = relatedStudent
-                };
+                var relatedTest = db.CurrentTest.First(test => test.Id == testId);
+                var toAdd = new TestSolution() {
+                                                 StudentId = studentEmail,
+                                                 TestId = testId,
+                                                 Url = url,
+                                                 Test = relatedTest,
+                                                 Student = relatedStudent
+                                               };
                 relatedStudent.TestSolution.Add(toAdd);
                 relatedTest.TestSolution.Add(toAdd);
                 db.SaveChanges();

@@ -9,10 +9,23 @@ namespace DataManager
         {
             using (var db = new HwProj_DBContext())
             {
-                var target = db.Lecture.First(l => l.Id == lectureId);
-                var toAdd = new Material() {LectureId = lectureId, Url = url, Lecture = target};
-                target.Material.Add(toAdd);
+                var target = db.Lecture.Find(lectureId);
+                var toAdd = new Material() {
+                                             LectureId = lectureId, 
+                                             Url = url, 
+                                             Lecture = target
+                                           };
                 db.Material.Add(toAdd);
+                db.SaveChanges();
+            }
+        }
+
+        public static void ChangeUrl(int id, string newUrl)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var target = db.Material.Find(id);
+                target.Url = newUrl;
                 db.SaveChanges();
             }
         }

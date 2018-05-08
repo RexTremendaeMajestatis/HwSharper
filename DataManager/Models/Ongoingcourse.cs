@@ -7,6 +7,8 @@ namespace DataManager.Models
     {
         public OngoingCourse()
         {
+            CurrentHomework = new HashSet<CurrentHomework>();
+            CurrentTest = new HashSet<CurrentTest>();
             Lecture = new HashSet<Lecture>();
             StudentCourse = new HashSet<StudentCourse>();
         }
@@ -19,6 +21,8 @@ namespace DataManager.Models
 
         public Course Course { get; set; }
         public Teacher Teacher { get; set; }
+        public ICollection<CurrentHomework> CurrentHomework { get; set; }
+        public ICollection<CurrentTest> CurrentTest { get; set; }
         public ICollection<Lecture> Lecture { get; set; }
         public ICollection<StudentCourse> StudentCourse { get; set; }
     }

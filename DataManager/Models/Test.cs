@@ -7,7 +7,7 @@ namespace DataManager.Models
     {
         public Test()
         {
-            TestSolution = new HashSet<TestSolution>();
+            CurrentTest = new HashSet<CurrentTest>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace DataManager.Models
 
         public Course Course { get; set; }
         public TestTask Task { get; set; }
-        public ICollection<TestSolution> TestSolution { get; set; }
+        public ICollection<CurrentTest> CurrentTest { get; set; }
     }
 }

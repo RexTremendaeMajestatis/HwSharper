@@ -7,7 +7,7 @@ namespace DataManager.Models
     {
         public Homework()
         {
-            HomeworkSolution = new HashSet<HomeworkSolution>();
+            CurrentHomework = new HashSet<CurrentHomework>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace DataManager.Models
 
         public Course Course { get; set; }
         public Hometask Task { get; set; }
-        public ICollection<HomeworkSolution> HomeworkSolution { get; set; }
+        public ICollection<CurrentHomework> CurrentHomework { get; set; }
     }
 }

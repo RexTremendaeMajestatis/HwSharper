@@ -17,6 +17,16 @@ namespace DataManager
             }
         }
 
+        public static void ChangeAnnouncement(int id, string newMsg)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var target = db.Announcement.Find(id);
+                target.Message = newMsg;
+                db.SaveChanges();
+            }
+        }
+
         public static void DeleteAnnouncement(int id)
         {
             using (var db = new HwProj_DBContext())

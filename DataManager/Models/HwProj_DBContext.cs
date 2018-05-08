@@ -8,6 +8,8 @@ namespace DataManager.Models
     {
         public virtual DbSet<Announcement> Announcement { get; set; }
         public virtual DbSet<Course> Course { get; set; }
+        public virtual DbSet<CurrentHomework> CurrentHomework { get; set; }
+        public virtual DbSet<CurrentTest> CurrentTest { get; set; }
         public virtual DbSet<Hometask> Hometask { get; set; }
         public virtual DbSet<Homework> Homework { get; set; }
         public virtual DbSet<HomeworkSolution> HomeworkSolution { get; set; }
@@ -49,6 +51,40 @@ namespace DataManager.Models
                 entity.Property(e => e.Id).HasDefaultValueSql("nextval('course_id_seq'::regclass)");
 
                 entity.Property(e => e.Title).IsRequired();
+            });
+
+            modelBuilder.Entity<CurrentHomework>(entity =>
+            {
+                entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"CurrentHomework_id_seq\"'::regclass)");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.HasOne(d => d.Course)
+                    .WithMany(p => p.CurrentHomework)
+                    .HasForeignKey(d => d.CourseId)
+                    .HasConstraintName("CurrentHomework_CourseId_fkey");
+
+                entity.HasOne(d => d.Hw)
+                    .WithMany(p => p.CurrentHomework)
+                    .HasForeignKey(d => d.HwId)
+                    .HasConstraintName("CurrentHomework_HwId_fkey");
+            });
+
+            modelBuilder.Entity<CurrentTest>(entity =>
+            {
+                entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"CurrentTests_Id_seq\"'::regclass)");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.HasOne(d => d.Course)
+                    .WithMany(p => p.CurrentTest)
+                    .HasForeignKey(d => d.CourseId)
+                    .HasConstraintName("CurrentTests_CourseId_fkey");
+
+                entity.HasOne(d => d.Test)
+                    .WithMany(p => p.CurrentTest)
+                    .HasForeignKey(d => d.TestId)
+                    .HasConstraintName("CurrentTests_TestId_fkey");
             });
 
             modelBuilder.Entity<Hometask>(entity =>
@@ -228,6 +264,14 @@ namespace DataManager.Models
                 .HasMax(2147483647);
 
             modelBuilder.HasSequence("course_id_seq")
+                .HasMin(1)
+                .HasMax(2147483647);
+
+            modelBuilder.HasSequence("CurrentHomework_id_seq")
+                .HasMin(1)
+                .HasMax(2147483647);
+
+            modelBuilder.HasSequence("CurrentTests_Id_seq")
                 .HasMin(1)
                 .HasMax(2147483647);
 

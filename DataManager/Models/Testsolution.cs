@@ -12,6 +12,6 @@ namespace DataManager.Models
         public string Url { get; set; }
 
         public Student Student { get; set; }
-        public Test Test { get; set; }
+        public CurrentTest Test { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace DataManager.Models
         public int Status { get; set; }
         public string Url { get; set; }
 
-        public Homework Homework { get; set; }
+        public CurrentHomework Homework { get; set; }
         public Student Student { get; set; }
     }
 }

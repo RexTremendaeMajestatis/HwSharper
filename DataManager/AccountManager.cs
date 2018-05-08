@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using DataManager.Models;
 using System.Linq;
-using System.Timers;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DataManager
 {
@@ -60,11 +58,12 @@ namespace DataManager
         }
 
         public static bool ValidateUser(string email, string pass)
-        {
+        {       
             using (var db = new HwProj_DBContext())
             {
                 var found = (GetTeachers(db).Any(user => user.Email == email && user.Password == pass) ||
                              GetStudents(db).Any(user => user.Email == email && user.Password == pass));
+                //db.SaveChanges();
                 return found;
             }
         }

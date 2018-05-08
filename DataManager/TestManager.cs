@@ -13,13 +13,13 @@ namespace DataManager
             {
                 var relatedTask = db.TestTask.First(task => task.Id == taskId);
                 var relatedCourse = db.Course.First(course => course.Id == courseId);
-                var toAdd = new Test() { TaskId = taskId, 
+                var toAdd = new Test() { 
+                                         TaskId = taskId, 
                                          CourseId = courseId,
                                          Course = relatedCourse,
                                          Task = relatedTask
                                        };
                 db.Test.Add(toAdd);
-                relatedCourse.Test.Append(toAdd);
                 db.SaveChanges();
             }
         }
