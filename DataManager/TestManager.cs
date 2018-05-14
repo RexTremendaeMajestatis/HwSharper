@@ -33,5 +33,14 @@ namespace DataManager
                 db.SaveChanges();
             }
         }
+        
+        public static List<Test> GetAllPlannedTestsOnCourse(int courseId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var tests = db.Test.Where(task => task.CourseId == courseId).ToList();
+                return tests;
+            }
+        }
     }
 }

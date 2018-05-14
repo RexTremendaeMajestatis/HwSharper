@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataManager.Models;
 
 namespace DataManager
@@ -28,6 +29,24 @@ namespace DataManager
                 var target = db.Lecture.Find(lecId);
                 target.Title = newTitle;
                 db.SaveChanges();
+            }
+        }
+
+        public static List<Lecture> GetAllLectures()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var lectures = db.Lecture.ToList();
+                return lectures;
+            }
+        }
+
+        public static List<Lecture> GetRelatedLectures(int courseId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var relatedLectures = db.Lecture.Where(lec => lec.CourseId == courseId).ToList();
+                return relatedLectures;
             }
         }
 

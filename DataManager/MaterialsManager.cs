@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataManager.Models;
 
 namespace DataManager
@@ -29,6 +30,16 @@ namespace DataManager
                 db.SaveChanges();
             }
         }
+        
+        public static List<Material> GetRelatedMaterials(int lecId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var materials = db.Material.Where(a => a.LectureId == lecId).ToList();
+                return materials;
+            }
+        }
+
 
         public static void DeleteMaterial(int id)
         {

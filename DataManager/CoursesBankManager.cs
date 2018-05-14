@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataManager.Models;
 namespace DataManager
 {
@@ -26,6 +27,15 @@ namespace DataManager
                 var target = db.Course.Find(courseId);
                 target.Title = newTitle;
                 db.SaveChanges();
+            }
+        }
+
+        public static List<Course> GetAllCourses()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var courses = db.Course.ToList();
+                return courses;
             }
         }
         

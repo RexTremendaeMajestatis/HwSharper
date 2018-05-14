@@ -35,11 +35,11 @@ namespace DataManager
             }
         }
 
-        public static IEnumerable<Homework> GetAllHwOnCourse(int courseId)
+        public static List<Homework> GetAllPlannedHwOnCourse(int courseId)
         {
             using (var db = new HwProj_DBContext())
             {
-                var hw = db.Homework.Where(task => task.CourseId == courseId);
+                var hw = db.Homework.Where(task => task.CourseId == courseId).ToList();
                 return hw;
             }
         }

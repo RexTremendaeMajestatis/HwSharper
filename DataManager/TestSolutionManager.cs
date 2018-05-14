@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DataManager.Models;
+using System.Collections.Generic;
 
 namespace DataManager
 {
@@ -53,6 +54,24 @@ namespace DataManager
                 db.SaveChanges();
             }
         }
+        
+        public static List<TestSolution> GetAllTestSolutions()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var solutions = db.TestSolution.ToList();
+                return solutions;
+            }
+        }
+                       
+        public static List<TestSolution> GetAllRelatedTestSolutions(int courseId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var relatedSolutions = db.TestSolution.Where(test => test.Test.CourseId == courseId).ToList();
+                return relatedSolutions;
+            }
+        }       
 
         public static void DeleteSolution(int id)
         {

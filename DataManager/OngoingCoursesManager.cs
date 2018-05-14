@@ -112,22 +112,22 @@ namespace DataManager
             }
         }
         
-        public static IEnumerable<Hometask> GetAssignedHomeworks(int courseId)
+        public static List<Hometask> GetAssignedHomeworks(int courseId)
         {
             using (var db = new HwProj_DBContext())
             {
                 var assignedHw = db.CurrentHomework.Where(hw => hw.CourseId == courseId)
-                                                   .Select(hw => hw.Hw.Task).AsEnumerable();
+                                                   .Select(hw => hw.Hw.Task).AsEnumerable().ToList();
                 return assignedHw;
             }
         }
         
-        public static IEnumerable<TestTask> GetAssignedTests(int courseId)
+        public static List<TestTask> GetAssignedTests(int courseId)
         {
             using (var db = new HwProj_DBContext())
             {
                 var assignedTests = db.CurrentTest.Where(test => test.CourseId == courseId)
-                                                  .Select(test => test.Test.Task).AsEnumerable();
+                                                  .Select(test => test.Test.Task).AsEnumerable().ToList();
                 return assignedTests;
             }
         }

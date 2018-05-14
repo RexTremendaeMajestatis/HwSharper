@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataManager.Models;
 
 namespace DataManager
@@ -32,6 +33,24 @@ namespace DataManager
                     db.SaveChanges();
                     return true;
                 }
+            }
+        }
+
+        public static List<Hometask> GetAllHwTasks()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var hw = db.Hometask.ToList();
+                return hw;
+            }
+        }
+        
+        public static List<TestTask> GetAllTestTasks()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var tests = db.TestTask.ToList();
+                return tests;
             }
         }
         

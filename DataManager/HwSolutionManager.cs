@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataManager.Models;
 
 namespace DataManager
@@ -51,6 +52,24 @@ namespace DataManager
                 var toSet = db.HomeworkSolution.First(s => s.Id == id);
                 toSet.Status = 3;
                 db.SaveChanges();
+            }
+        }
+
+        public static List<HomeworkSolution> GetAllHwSolutions()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var solutions = db.HomeworkSolution.ToList();
+                return solutions;
+            }
+        }
+
+        public static List<HomeworkSolution> GetAllRelatedHwSolutions(int courseId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var relatedSolutions = db.HomeworkSolution.Where(hw => hw.Homework.CourseId == courseId).ToList();
+                return relatedSolutions;
             }
         }
 
