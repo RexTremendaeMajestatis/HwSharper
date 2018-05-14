@@ -7,7 +7,7 @@ open WebSharper.UI.Client
 open WebSharper.UI.Html
 
 [<JavaScript>]
-module TeacherClient =
+module CommonClient =
 
     type RealTaskItem = 
         {
@@ -168,7 +168,7 @@ module TeacherClient =
         ] 
 
     let RenderCourses (m: CoursesModel) (course: CourseItem) = 
-        div [] [text course.Name]
+        div [] [text (course.Name + " " + course.Year.ToString())]
 
     let CoursePeopleList m =
         m.People.View
@@ -253,9 +253,12 @@ module TeacherClient =
         div [] [ToDoList m]
 
     let CoursesOverview() =
+        let ci = CourseItem.Create "Software engineering" 2018
         let m = CreateCoursesModel() 
+        m.Courses.Add ci
         div [] [CoursesList m]
 
     let FollowCourse() = 
+
         let m = CreatePeopleModel()
         div [] [CoursematesList m]

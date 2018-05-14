@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DataManager.Models
+﻿namespace DataManager.Models
 {
     public partial class Material
     {

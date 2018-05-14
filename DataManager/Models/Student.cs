@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DataManager.Models
 {
@@ -14,7 +13,7 @@ namespace DataManager.Models
 
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Fullname { get; set; }
+        public string FullName { get; set; }
 
         public ICollection<HomeworkSolution> HomeworkSolution { get; set; }
         public ICollection<StudentCourse> StudentCourse { get; set; }

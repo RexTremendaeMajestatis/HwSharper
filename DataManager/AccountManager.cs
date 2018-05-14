@@ -44,12 +44,12 @@ namespace DataManager
                     return false;
                 if (isTeacher)
                 {
-                    var newTeacher = new Teacher() {Email = email, Password = pass, Fullname = fullname};
+                    var newTeacher = new Teacher() {Email = email, Password = pass, FullName = fullname};
                     db.Teacher.Add(newTeacher);
                 }
                 else
                 {
-                    var newStudent = new Student() {Email = email, Password = pass, Fullname = fullname};
+                    var newStudent = new Student() {Email = email, Password = pass, FullName = fullname};
                     db.Student.Add(newStudent);
                 }
                 db.SaveChanges();

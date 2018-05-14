@@ -28,7 +28,7 @@ namespace DataManager.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql(@"Host=localhost;Database=HwProj_DB;Username=username;Password=pass");
+                optionsBuilder.UseNpgsql(@"Host=localhost;Database=HwProj_DB;Username=postgres;Password=ImFindling");
             }
         }
 
@@ -183,7 +183,7 @@ namespace DataManager.Models
 
                 entity.Property(e => e.Email).ValueGeneratedNever();
 
-                entity.Property(e => e.Fullname).IsRequired();
+                entity.Property(e => e.FullName).IsRequired();
 
                 entity.Property(e => e.Password).IsRequired();
             });
@@ -209,7 +209,7 @@ namespace DataManager.Models
 
                 entity.Property(e => e.Email).ValueGeneratedNever();
 
-                entity.Property(e => e.Fullname).IsRequired();
+                entity.Property(e => e.FullName).IsRequired();
 
                 entity.Property(e => e.Password).IsRequired();
             });
