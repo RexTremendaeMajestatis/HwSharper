@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using DataManager.Models;
 
@@ -25,6 +26,15 @@ namespace DataManager
                 var target = db.Announcement.Find(id);
                 target.Message = newMsg;
                 db.SaveChanges();
+            }
+        }
+
+        public static Lecture GetRelatedLecture(int announcementId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var lec = db.Lecture.First(l => l.Announcement.Any(a => a.Id == announcementId));
+                return lec;
             }
         }
 

@@ -31,6 +31,15 @@ namespace DataManager
             }
         }
         
+        public static Lecture GetRelatedLecture(int matId)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var lec = db.Lecture.First(l => l.Material.Any(a => a.Id == matId));
+                return lec;
+            }
+        }
+        
         public static List<Material> GetRelatedMaterials(int lecId)
         {
             using (var db = new HwProj_DBContext())

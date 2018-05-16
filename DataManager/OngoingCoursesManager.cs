@@ -27,6 +27,24 @@ namespace DataManager
             }
         }
 
+        public static Course GetRelatedCourseById(int id)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var course = db.Course.Find(id);
+                return course;
+            }
+        }
+
+        public static Teacher GetRelatedTeacherById(int id)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var teacher = db.Teacher.Find(id);
+                return teacher;
+            }
+        }
+
         public static List<OngoingCourse> GetAllOngoingCourses()
         {
             using (var db = new HwProj_DBContext())
