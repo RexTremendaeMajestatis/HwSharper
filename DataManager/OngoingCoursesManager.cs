@@ -27,6 +27,24 @@ namespace DataManager
             }
         }
 
+        public static List<OngoingCourse> GetAllOngoingCourses()
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var courses = db.OngoingCourse.ToList();
+                return courses;
+            }
+        }
+
+        public static List<OngoingCourse> GetAllTeachersOngoingCourses(string teacherEmail)
+        {
+            using (var db = new HwProj_DBContext())
+            {
+                var courses = db.OngoingCourse.Where(c => c.TeacherId == teacherEmail).ToList();
+                return courses;
+            }
+        }
+
         public static void DeleteOngoingCourse(int courseId)
         {
             using (var db = new HwProj_DBContext())
