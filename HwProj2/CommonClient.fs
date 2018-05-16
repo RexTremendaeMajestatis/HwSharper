@@ -7,7 +7,7 @@ open WebSharper.UI.Client
 open WebSharper.UI.Html
 
 [<JavaScript>]
-module TeacherClient =
+module CommonClient =
 
     type RealTaskItem = 
         {
