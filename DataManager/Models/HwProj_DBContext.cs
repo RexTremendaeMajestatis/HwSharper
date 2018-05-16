@@ -183,7 +183,7 @@ namespace DataManager.Models
 
                 entity.Property(e => e.Email).ValueGeneratedNever();
 
-                entity.Property(e => e.Fullname).IsRequired();
+                entity.Property(e => e.FullName).IsRequired();
 
                 entity.Property(e => e.Password).IsRequired();
             });
@@ -209,7 +209,7 @@ namespace DataManager.Models
 
                 entity.Property(e => e.Email).ValueGeneratedNever();
 
-                entity.Property(e => e.Fullname).IsRequired();
+                entity.Property(e => e.FullName).IsRequired();
 
                 entity.Property(e => e.Password).IsRequired();
             });
