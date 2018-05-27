@@ -1,30 +1,34 @@
 (function()
 {
  "use strict";
- var Global,HwProj2,RegClient,CommonClient,RealTaskItem,TaskItem,CourseItem,PersonItem,RealTasksModel,TasksModel,CoursesModel,PeopleModel,Templating,WebSharper,UI,Doc,Forms,Bootstrap,Controls,Simple,List,AttrProxy,Var,Concurrency,Remoting,AjaxRemotingProvider,Form,IntelliFactory,Runtime,Pervasives,Validation,Key,ListModel;
+ var Global,HwProj2,ModelsClient,RealTaskItem,TaskItem,CourseItem,PersonItem,RealTasksModel,TasksModel,CoursesModel,PeopleModel,RendersClient,RegClient,CommonClient,Templating,WebSharper,UI,Key,Var,ListModel,List,Doc,AttrProxy,Forms,Bootstrap,Controls,Simple,Concurrency,Remoting,AjaxRemotingProvider,Form,IntelliFactory,Runtime,Pervasives,Validation;
  Global=window;
  HwProj2=Global.HwProj2=Global.HwProj2||{};
+ ModelsClient=HwProj2.ModelsClient=HwProj2.ModelsClient||{};
+ RealTaskItem=ModelsClient.RealTaskItem=ModelsClient.RealTaskItem||{};
+ TaskItem=ModelsClient.TaskItem=ModelsClient.TaskItem||{};
+ CourseItem=ModelsClient.CourseItem=ModelsClient.CourseItem||{};
+ PersonItem=ModelsClient.PersonItem=ModelsClient.PersonItem||{};
+ RealTasksModel=ModelsClient.RealTasksModel=ModelsClient.RealTasksModel||{};
+ TasksModel=ModelsClient.TasksModel=ModelsClient.TasksModel||{};
+ CoursesModel=ModelsClient.CoursesModel=ModelsClient.CoursesModel||{};
+ PeopleModel=ModelsClient.PeopleModel=ModelsClient.PeopleModel||{};
+ RendersClient=HwProj2.RendersClient=HwProj2.RendersClient||{};
  RegClient=HwProj2.RegClient=HwProj2.RegClient||{};
  CommonClient=HwProj2.CommonClient=HwProj2.CommonClient||{};
- RealTaskItem=CommonClient.RealTaskItem=CommonClient.RealTaskItem||{};
- TaskItem=CommonClient.TaskItem=CommonClient.TaskItem||{};
- CourseItem=CommonClient.CourseItem=CommonClient.CourseItem||{};
- PersonItem=CommonClient.PersonItem=CommonClient.PersonItem||{};
- RealTasksModel=CommonClient.RealTasksModel=CommonClient.RealTasksModel||{};
- TasksModel=CommonClient.TasksModel=CommonClient.TasksModel||{};
- CoursesModel=CommonClient.CoursesModel=CommonClient.CoursesModel||{};
- PeopleModel=CommonClient.PeopleModel=CommonClient.PeopleModel||{};
  Templating=HwProj2.Templating=HwProj2.Templating||{};
  WebSharper=Global.WebSharper;
  UI=WebSharper&&WebSharper.UI;
+ Key=UI&&UI.Key;
+ Var=UI&&UI.Var;
+ ListModel=UI&&UI.ListModel;
+ List=WebSharper&&WebSharper.List;
  Doc=UI&&UI.Doc;
+ AttrProxy=UI&&UI.AttrProxy;
  Forms=WebSharper&&WebSharper.Forms;
  Bootstrap=Forms&&Forms.Bootstrap;
  Controls=Bootstrap&&Bootstrap.Controls;
  Simple=Controls&&Controls.Simple;
- List=WebSharper&&WebSharper.List;
- AttrProxy=UI&&UI.AttrProxy;
- Var=UI&&UI.Var;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
@@ -33,8 +37,295 @@
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Pervasives=Forms&&Forms.Pervasives;
  Validation=Forms&&Forms.Validation;
- Key=UI&&UI.Key;
- ListModel=UI&&UI.ListModel;
+ RealTaskItem.Create=function(name,requirement)
+ {
+  return RealTaskItem.New(name,requirement,Key.Fresh());
+ };
+ RealTaskItem.New=function(Name,Requirement,Key$1)
+ {
+  return{
+   Name:Name,
+   Requirement:Requirement,
+   Key:Key$1
+  };
+ };
+ TaskItem.Create=function(name,info,source,date,course)
+ {
+  var K;
+  K=Key.Fresh();
+  return TaskItem.New(name,info,source,Var.Create$1(false),Var.Create$1(false),date,course,K);
+ };
+ TaskItem.New=function(Name,Info,Source,IsAccepted,IsChangesRequired,Date,Course,Key$1)
+ {
+  return{
+   Name:Name,
+   Info:Info,
+   Source:Source,
+   IsAccepted:IsAccepted,
+   IsChangesRequired:IsChangesRequired,
+   Date:Date,
+   Course:Course,
+   Key:Key$1
+  };
+ };
+ CourseItem.Create=function(teacher,group)
+ {
+  return CourseItem.New(teacher,group,Key.Fresh());
+ };
+ CourseItem.New=function(TeacherFullName,GroupId,Key$1)
+ {
+  return{
+   TeacherFullName:TeacherFullName,
+   GroupId:GroupId,
+   Key:Key$1
+  };
+ };
+ PersonItem.Create=function(name,email,github)
+ {
+  return PersonItem.New(name,email,github,Key.Fresh());
+ };
+ PersonItem.New=function(Name,Email,GitHub,Key$1)
+ {
+  return{
+   Name:Name,
+   Email:Email,
+   GitHub:GitHub,
+   Key:Key$1
+  };
+ };
+ RealTasksModel.New=function(RealTasks)
+ {
+  return{
+   RealTasks:RealTasks
+  };
+ };
+ TasksModel.New=function(Tasks)
+ {
+  return{
+   Tasks:Tasks
+  };
+ };
+ CoursesModel.New=function(Courses)
+ {
+  return{
+   Courses:Courses
+  };
+ };
+ PeopleModel.New=function(People)
+ {
+  return{
+   People:People
+  };
+ };
+ ModelsClient.CreatePeopleModel=function()
+ {
+  return PeopleModel.New(ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty));
+ };
+ ModelsClient.CreateCoursesModel=function()
+ {
+  return CoursesModel.New(ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty));
+ };
+ ModelsClient.CreateTasksModel=function()
+ {
+  return TasksModel.New(ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty));
+ };
+ ModelsClient.CreateRealTasksModel=function()
+ {
+  return RealTasksModel.New(ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty));
+ };
+ RendersClient.CoursematesList=function(m)
+ {
+  return Doc.ConvertBy(m.People.key,function(p)
+  {
+   return RendersClient.RenderCoursemates(m,p);
+  },m.People.v);
+ };
+ RendersClient.CoursesList=function(m)
+ {
+  return Doc.ConvertBy(m.Courses.key,function(c)
+  {
+   return RendersClient.RenderCourses(m,c);
+  },m.Courses.v);
+ };
+ RendersClient.ToDoList=function(m)
+ {
+  return Doc.ConvertBy(m.Tasks.key,function(t)
+  {
+   return RendersClient.RenderToDo(m,t);
+  },m.Tasks.v);
+ };
+ RendersClient.ToCheckList=function(m)
+ {
+  return Doc.ConvertBy(m.Tasks.key,function(t)
+  {
+   return RendersClient.RenderToCheck(m,t);
+  },m.Tasks.v);
+ };
+ RendersClient.TasksToAppoint=function(m)
+ {
+  return Doc.ConvertBy(m.RealTasks.key,function(t)
+  {
+   return RendersClient.RenderTasksToAppoint(m,t);
+  },m.RealTasks.v);
+ };
+ RendersClient.CoursesToAppoint=function(m)
+ {
+  return Doc.ConvertBy(m.Courses.key,function(c)
+  {
+   return RendersClient.RenderCoursesToAppoint(m,c);
+  },m.Courses.v);
+ };
+ RendersClient.CoursePeopleList=function(m)
+ {
+  return Doc.ConvertBy(m.People.key,function(p)
+  {
+   return RendersClient.RenderCoursemates(m,p);
+  },m.People.v);
+ };
+ RendersClient.RenderCourses=function(m,course)
+ {
+  return Doc.Element("div",[],[Doc.TextNode(course.TeacherFullName+course.GroupId)]);
+ };
+ RendersClient.RenderToDo$88$38=function(todo,m)
+ {
+  return function()
+  {
+   return function()
+   {
+    return m.Tasks.Remove(todo);
+   };
+  };
+ };
+ RendersClient.RenderToDo=function(m,todo)
+ {
+  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(todo.Date),Doc.TextNode(todo.Name),Doc.TextNode(todo.Info)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
+  {
+   return function()
+   {
+    return m.Tasks.Remove(todo);
+   };
+  })],[Doc.TextNode("Upload")])])])]);
+ };
+ RendersClient.RenderCoursemates=function(m,person)
+ {
+  return Doc.Element("div",[],[Doc.TextNode(person.Name)]);
+ };
+ RendersClient.RenderCourseStudents$71$38=function(person,m)
+ {
+  return function()
+  {
+   return function()
+   {
+    return m.People.Remove(person);
+   };
+  };
+ };
+ RendersClient.RenderCourseStudents=function(m,person)
+ {
+  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(person.Name)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
+  {
+   return function()
+   {
+    return m.People.Remove(person);
+   };
+  })],[Doc.TextNode("Remove")])])])]);
+ };
+ RendersClient.RenderCoursesToAppoint$59$38=function(course,m)
+ {
+  return function()
+  {
+   return function()
+   {
+    return m.Courses.Remove(course);
+   };
+  };
+ };
+ RendersClient.RenderCoursesToAppoint=function(m,course)
+ {
+  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(course.TeacherFullName+course.GroupId)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
+  {
+   return function()
+   {
+    return m.Courses.Remove(course);
+   };
+  })],[Doc.TextNode("Appoint")])])])]);
+ };
+ RendersClient.RenderTasksToAppoint$47$38=function(task,m)
+ {
+  return function()
+  {
+   return function()
+   {
+    return m.RealTasks.Remove(task);
+   };
+  };
+ };
+ RendersClient.RenderTasksToAppoint=function(m,task)
+ {
+  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.Element("h6",[],[Doc.TextNode(task.Name)]),Doc.Element("p",[],[Doc.TextNode(task.Requirement)])]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
+  {
+   return function()
+   {
+    return m.RealTasks.Remove(task);
+   };
+  })],[Doc.TextNode("Appoint")])])])]);
+ };
+ RendersClient.RenderToCheck$31$38=function(tochek,m)
+ {
+  return function()
+  {
+   return function()
+   {
+    tochek.IsChangesRequired.Set(true);
+    tochek.IsAccepted.Set(false);
+    return m.Tasks.Remove(tochek);
+   };
+  };
+ };
+ RendersClient.RenderToCheck$24$38=function(tochek,m)
+ {
+  return function()
+  {
+   return function()
+   {
+    tochek.IsAccepted.Set(true);
+    tochek.IsChangesRequired.Set(false);
+    return m.Tasks.Remove(tochek);
+   };
+  };
+ };
+ RendersClient.RenderToCheck=function(m,tochek)
+ {
+  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(tochek.Date),Doc.TextNode(tochek.Name),Doc.TextNode(tochek.Info)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
+  {
+   return function()
+   {
+    tochek.IsAccepted.Set(true);
+    tochek.IsChangesRequired.Set(false);
+    return m.Tasks.Remove(tochek);
+   };
+  })],[Doc.TextNode("Accept")])]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
+  {
+   return function()
+   {
+    tochek.IsChangesRequired.Set(true);
+    tochek.IsAccepted.Set(false);
+    return m.Tasks.Remove(tochek);
+   };
+  })],[Doc.TextNode("Require Changes")])])])]);
+ };
  RegClient.RegUser=function()
  {
   function r(user,pass,name,email,isTeacher,submit)
@@ -114,104 +405,24 @@
    });
   })),null);
  };
- RealTaskItem.Create=function(name,requirement)
- {
-  return RealTaskItem.New(name,requirement,Key.Fresh());
- };
- RealTaskItem.New=function(Name,Requirement,Key$1)
- {
-  return{
-   Name:Name,
-   Requirement:Requirement,
-   Key:Key$1
-  };
- };
- TaskItem.Create=function(name,info,source,date,course)
- {
-  var K;
-  K=Key.Fresh();
-  return TaskItem.New(name,info,source,Var.Create$1(false),Var.Create$1(false),date,course,K);
- };
- TaskItem.New=function(Name,Info,Source,IsAccepted,IsChangesRequired,Date,Course,Key$1)
- {
-  return{
-   Name:Name,
-   Info:Info,
-   Source:Source,
-   IsAccepted:IsAccepted,
-   IsChangesRequired:IsChangesRequired,
-   Date:Date,
-   Course:Course,
-   Key:Key$1
-  };
- };
- CourseItem.Create=function(name,year)
- {
-  return CourseItem.New(name,year,Key.Fresh());
- };
- CourseItem.New=function(Name,Year,Key$1)
- {
-  return{
-   Name:Name,
-   Year:Year,
-   Key:Key$1
-  };
- };
- PersonItem.Create=function(name,email,github)
- {
-  return PersonItem.New(name,email,github,Key.Fresh());
- };
- PersonItem.New=function(Name,Email,GitHub,Key$1)
- {
-  return{
-   Name:Name,
-   Email:Email,
-   GitHub:GitHub,
-   Key:Key$1
-  };
- };
- RealTasksModel.New=function(RealTasks)
- {
-  return{
-   RealTasks:RealTasks
-  };
- };
- TasksModel.New=function(Tasks)
- {
-  return{
-   Tasks:Tasks
-  };
- };
- CoursesModel.New=function(Courses)
- {
-  return{
-   Courses:Courses
-  };
- };
- PeopleModel.New=function(People)
- {
-  return{
-   People:People
-  };
- };
  CommonClient.FollowCourse=function()
  {
-  return Doc.Element("div",[],[CommonClient.CoursematesList(CommonClient.CreatePeopleModel())]);
+  return Doc.Element("div",[],[RendersClient.CoursematesList(ModelsClient.CreatePeopleModel())]);
  };
  CommonClient.CoursesOverview=function()
  {
-  return Doc.Element("div",[],[CommonClient.CoursesList(CommonClient.CreateCoursesModel())]);
+  return Doc.Element("div",[],[RendersClient.CoursesList((new AjaxRemotingProvider.New()).Sync("HwProj2:HwProj2.Server.GetAllOngoingCourses:1418547080",[]))]);
  };
  CommonClient.DoTasks=function()
  {
-  return Doc.Element("div",[],[CommonClient.ToDoList(CommonClient.CreateTasksModel())]);
+  return Doc.Element("div",[],[RendersClient.ToDoList(ModelsClient.CreateTasksModel())]);
  };
  CommonClient.ManageCourse=function()
  {
   var pm,inviteField;
-  pm=CommonClient.CreatePeopleModel();
+  pm=ModelsClient.CreatePeopleModel();
   inviteField=Doc.Input([],Var.Create$1(""));
-  return Doc.Element("div",[],[Doc.Element("h4",[],[Doc.TextNode("test")]),Doc.Element("div",[],[CommonClient.CoursePeopleList(pm)]),Doc.Element("div",[],[Doc.Element("button",[],[Doc.TextNode("Complete")])]),Doc.Element("div",[],[inviteField]),Doc.Element("div",[],[Doc.Element("button",[],[Doc.TextNode("Invite")])])]);
+  return Doc.Element("div",[],[Doc.Element("h4",[],[Doc.TextNode("test")]),Doc.Element("div",[],[RendersClient.CoursePeopleList(pm)]),Doc.Element("div",[],[Doc.Element("button",[],[Doc.TextNode("Complete")])]),Doc.Element("div",[],[inviteField]),Doc.Element("div",[],[Doc.Element("button",[],[Doc.TextNode("Invite")])])]);
  };
  CommonClient.CreateCourse=function()
  {
@@ -225,9 +436,9 @@
  CommonClient.AppointTask=function()
  {
   var tm,cm;
-  tm=CommonClient.CreateRealTasksModel();
-  cm=CommonClient.CreateCoursesModel();
-  return Doc.Element("div",[],[Doc.Element("div",[],[CommonClient.TasksToAppoint(tm)]),Doc.Element("div",[],[CommonClient.CoursesToAppoint(cm)]),Doc.Element("div",[],[Doc.Element("button",[],[Doc.TextNode("Push")])])]);
+  tm=ModelsClient.CreateRealTasksModel();
+  cm=ModelsClient.CreateCoursesModel();
+  return Doc.Element("div",[],[Doc.Element("div",[],[RendersClient.TasksToAppoint(tm)]),Doc.Element("div",[],[RendersClient.CoursesToAppoint(cm)]),Doc.Element("div",[],[Doc.Element("button",[],[Doc.TextNode("Push")])])]);
  };
  CommonClient.CreateTask=function()
  {
@@ -240,216 +451,7 @@
  };
  CommonClient.CheckTasks=function()
  {
-  return Doc.Element("div",[],[CommonClient.ToCheckList(CommonClient.CreateTasksModel())]);
- };
- CommonClient.CoursematesList=function(m)
- {
-  return Doc.ConvertBy(m.People.key,function(p)
-  {
-   return CommonClient.RenderCoursemates(m,p);
-  },m.People.v);
- };
- CommonClient.CoursesList=function(m)
- {
-  return Doc.ConvertBy(m.Courses.key,function(c)
-  {
-   return CommonClient.RenderCourses(m,c);
-  },m.Courses.v);
- };
- CommonClient.ToDoList=function(m)
- {
-  return Doc.ConvertBy(m.Tasks.key,function(t)
-  {
-   return CommonClient.RenderToDo(m,t);
-  },m.Tasks.v);
- };
- CommonClient.ToCheckList=function(m)
- {
-  return Doc.ConvertBy(m.Tasks.key,function(t)
-  {
-   return CommonClient.RenderToCheck(m,t);
-  },m.Tasks.v);
- };
- CommonClient.TasksToAppoint=function(m)
- {
-  return Doc.ConvertBy(m.RealTasks.key,function(t)
-  {
-   return CommonClient.RenderTasksToAppoint(m,t);
-  },m.RealTasks.v);
- };
- CommonClient.CoursesToAppoint=function(m)
- {
-  return Doc.ConvertBy(m.Courses.key,function(c)
-  {
-   return CommonClient.RenderCoursesToAppoint(m,c);
-  },m.Courses.v);
- };
- CommonClient.CoursePeopleList=function(m)
- {
-  return Doc.ConvertBy(m.People.key,function(p)
-  {
-   return CommonClient.RenderCoursemates(m,p);
-  },m.People.v);
- };
- CommonClient.RenderCourses=function(m,course)
- {
-  return Doc.Element("div",[],[Doc.TextNode(course.Name)]);
- };
- CommonClient.RenderToDo$165$38=function(todo,m)
- {
-  return function()
-  {
-   return function()
-   {
-    return m.Tasks.Remove(todo);
-   };
-  };
- };
- CommonClient.RenderToDo=function(m,todo)
- {
-  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(todo.Date),Doc.TextNode(todo.Name),Doc.TextNode(todo.Info)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    return m.Tasks.Remove(todo);
-   };
-  })],[Doc.TextNode("Upload")])])])]);
- };
- CommonClient.RenderCoursemates=function(m,person)
- {
-  return Doc.Element("div",[],[Doc.TextNode(person.Name)]);
- };
- CommonClient.RenderCourseStudents$148$38=function(person,m)
- {
-  return function()
-  {
-   return function()
-   {
-    return m.People.Remove(person);
-   };
-  };
- };
- CommonClient.RenderCourseStudents=function(m,person)
- {
-  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(person.Name)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    return m.People.Remove(person);
-   };
-  })],[Doc.TextNode("Remove")])])])]);
- };
- CommonClient.RenderCoursesToAppoint$136$38=function(course,m)
- {
-  return function()
-  {
-   return function()
-   {
-    return m.Courses.Remove(course);
-   };
-  };
- };
- CommonClient.RenderCoursesToAppoint=function(m,course)
- {
-  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(course.Name)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    return m.Courses.Remove(course);
-   };
-  })],[Doc.TextNode("Appoint")])])])]);
- };
- CommonClient.RenderTasksToAppoint$124$38=function(task,m)
- {
-  return function()
-  {
-   return function()
-   {
-    return m.RealTasks.Remove(task);
-   };
-  };
- };
- CommonClient.RenderTasksToAppoint=function(m,task)
- {
-  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.Element("h6",[],[Doc.TextNode(task.Name)]),Doc.Element("p",[],[Doc.TextNode(task.Requirement)])]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    return m.RealTasks.Remove(task);
-   };
-  })],[Doc.TextNode("Appoint")])])])]);
- };
- CommonClient.RenderToCheck$108$38=function(tochek,m)
- {
-  return function()
-  {
-   return function()
-   {
-    tochek.IsChangesRequired.Set(true);
-    tochek.IsAccepted.Set(false);
-    return m.Tasks.Remove(tochek);
-   };
-  };
- };
- CommonClient.RenderToCheck$101$38=function(tochek,m)
- {
-  return function()
-  {
-   return function()
-   {
-    tochek.IsAccepted.Set(true);
-    tochek.IsChangesRequired.Set(false);
-    return m.Tasks.Remove(tochek);
-   };
-  };
- };
- CommonClient.RenderToCheck=function(m,tochek)
- {
-  return Doc.Element("div",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.TextNode(tochek.Date),Doc.TextNode(tochek.Name),Doc.TextNode(tochek.Info)]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    tochek.IsAccepted.Set(true);
-    tochek.IsChangesRequired.Set(false);
-    return m.Tasks.Remove(tochek);
-   };
-  })],[Doc.TextNode("Accept")])]),Doc.Element("td",[],[Doc.Element("button",[AttrProxy.HandlerImpl("click",function()
-  {
-   return function()
-   {
-    tochek.IsChangesRequired.Set(true);
-    tochek.IsAccepted.Set(false);
-    return m.Tasks.Remove(tochek);
-   };
-  })],[Doc.TextNode("Require Changes")])])])]);
- };
- CommonClient.CreatePeopleModel=function()
- {
-  return PeopleModel.New(ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty));
- };
- CommonClient.CreateCoursesModel=function()
- {
-  return CoursesModel.New(ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty));
- };
- CommonClient.CreateTasksModel=function()
- {
-  return TasksModel.New(ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty));
- };
- CommonClient.CreateRealTasksModel=function()
- {
-  return RealTasksModel.New(ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty));
+  return Doc.Element("div",[],[RendersClient.ToCheckList(ModelsClient.CreateTasksModel())]);
  };
  Templating.MenuBarLogged$33$27=Runtime.Curried3(function($1,$2,$3)
  {

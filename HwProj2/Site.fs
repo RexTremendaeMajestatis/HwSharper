@@ -85,7 +85,7 @@ module Site =
     let CoursesPage ctx =
         Templating.Main ctx EndPoint.Courses "Courses" [
             h1 [] [text "Courses"]
-            p [] [text "*Courses list*"]
+            p [] [client <@ CommonClient.CoursesOverview() @>]
         ]
 
 

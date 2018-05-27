@@ -8,6 +8,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+HwProj_DBContext.cs
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

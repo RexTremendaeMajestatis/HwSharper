@@ -5,6 +5,7 @@ open DataManager.Models
 
 module Server =
     open DataManager
+    open ModelsClient
 
     [<Rpc>]
     let RegisterUser email password fullname role =
@@ -32,3 +33,14 @@ module Server =
     let LogoutUser () =
         let ctx = Web.Remoting.GetContext()
         ctx.UserSession.Logout()
+
+    [<Rpc>]
+    let GetAllOngoingCourses () =
+        (*let courses = OngoingCoursesManager.GetAllOngoingCourses()
+        let output = CreateCoursesModel()
+        for course in courses do
+            output.Courses.Add (CourseItem.Create course.Teacher.FullName course.GroupId)
+        output*)
+        CreateCoursesModel()
+        
+

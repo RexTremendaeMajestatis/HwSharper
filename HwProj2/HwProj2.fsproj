@@ -19,7 +19,9 @@
     <Compile Remove="db.fs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModelsClient.fs" />
     <Compile Include="Remoting.fs" />
+    <Compile Include="RendersClient.fs" />
     <Compile Include="RegClient.fs" />
     <Compile Include="CommonClient.fs" />
     <Compile Include="Site.fs" />
