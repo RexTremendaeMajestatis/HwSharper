@@ -65,9 +65,9 @@ module CommonClient =
         let m = CreateTasksModel()
         div [] [ToDoList m]
 
-    let CoursesOverview() =
+    (*let CoursesOverview() =
         let coursesList = Server.GetAllOngoingCourses()
-        div [] [CoursesList coursesList]
+        div [] [CoursesList coursesList]*)
 
     let FollowCourse() = 
         let m = CreatePeopleModel()

@@ -39,11 +39,12 @@ module ModelsClient =
         {
             TeacherFullName: string
             GroupId: string
+            CourseId: string
             Key: Key
         }
 
-        static member Create teacher group = 
-            { Key = Key.Fresh(); TeacherFullName = teacher; GroupId = group }
+        static member Create teacher group course = 
+            { Key = Key.Fresh(); TeacherFullName = teacher; GroupId = group; CourseId = course}
 
     type PersonItem = 
         {

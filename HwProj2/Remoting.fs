@@ -36,11 +36,6 @@ module Server =
 
     [<Rpc>]
     let GetAllOngoingCourses () =
-        (*let courses = OngoingCoursesManager.GetAllOngoingCourses()
-        let output = CreateCoursesModel()
-        for course in courses do
-            output.Courses.Add (CourseItem.Create course.Teacher.FullName course.GroupId)
-        output*)
-        CreateCoursesModel()
-        
+        let courses = OngoingCoursesManager.GetAllOngoingCourses()
+        courses
 

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,HwProj2,ModelsClient,RealTaskItem,TaskItem,CourseItem,PersonItem,RealTasksModel,TasksModel,CoursesModel,PeopleModel,RendersClient,RegClient,CommonClient,Templating,WebSharper,UI,Key,Var,ListModel,List,Doc,AttrProxy,Forms,Bootstrap,Controls,Simple,Concurrency,Remoting,AjaxRemotingProvider,Form,IntelliFactory,Runtime,Pervasives,Validation;
+ var Global,HwProj2,ModelsClient,RealTaskItem,TaskItem,CourseItem,PersonItem,RealTasksModel,TasksModel,CoursesModel,PeopleModel,RendersClient,RegClient,CommonClient,Course,Templating,WebSharper,UI,Key,Var,ListModel,List,Doc,AttrProxy,Forms,Bootstrap,Controls,Simple,Concurrency,Remoting,AjaxRemotingProvider,Form,IntelliFactory,Runtime,Pervasives,Validation;
  Global=window;
  HwProj2=Global.HwProj2=Global.HwProj2||{};
  ModelsClient=HwProj2.ModelsClient=HwProj2.ModelsClient||{};
@@ -16,6 +16,7 @@
  RendersClient=HwProj2.RendersClient=HwProj2.RendersClient||{};
  RegClient=HwProj2.RegClient=HwProj2.RegClient||{};
  CommonClient=HwProj2.CommonClient=HwProj2.CommonClient||{};
+ Course=HwProj2.Course=HwProj2.Course||{};
  Templating=HwProj2.Templating=HwProj2.Templating||{};
  WebSharper=Global.WebSharper;
  UI=WebSharper&&WebSharper.UI;
@@ -55,7 +56,7 @@
   K=Key.Fresh();
   return TaskItem.New(name,info,source,Var.Create$1(false),Var.Create$1(false),date,course,K);
  };
- TaskItem.New=function(Name,Info,Source,IsAccepted,IsChangesRequired,Date,Course,Key$1)
+ TaskItem.New=function(Name,Info,Source,IsAccepted,IsChangesRequired,Date,Course$1,Key$1)
  {
   return{
    Name:Name,
@@ -64,19 +65,20 @@
    IsAccepted:IsAccepted,
    IsChangesRequired:IsChangesRequired,
    Date:Date,
-   Course:Course,
+   Course:Course$1,
    Key:Key$1
   };
  };
- CourseItem.Create=function(teacher,group)
+ CourseItem.Create=function(teacher,group,course)
  {
-  return CourseItem.New(teacher,group,Key.Fresh());
+  return CourseItem.New(teacher,group,course,Key.Fresh());
  };
- CourseItem.New=function(TeacherFullName,GroupId,Key$1)
+ CourseItem.New=function(TeacherFullName,GroupId,CourseId,Key$1)
  {
   return{
    TeacherFullName:TeacherFullName,
    GroupId:GroupId,
+   CourseId:CourseId,
    Key:Key$1
   };
  };
@@ -328,9 +330,9 @@
  };
  RegClient.RegUser=function()
  {
-  function r(user,pass,name,email,isTeacher,submit)
+  function r(email,pass,name,isTeacher,submit)
   {
-   return Doc.Element("form",[],[Simple.InputWithError("Username",user,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),Simple.InputWithError("Name",name,submit.view),Simple.InputWithError("Email",email,submit.view),Controls.Radio("Teacher",List.ofArray([AttrProxy.Create("class","radio"),AttrProxy.Create("checked","checked")]),isTeacher,[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),Controls.Radio("Student",List.ofArray([AttrProxy.Create("class","radio")]),Var.Create$1(!isTeacher.Get()),[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),((function(a$1)
+   return Doc.Element("form",[],[Simple.InputWithError("Email",email,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),Simple.InputWithError("Name",name,submit.view),Controls.Radio("Teacher",List.ofArray([AttrProxy.Create("class","radio"),AttrProxy.Create("checked","checked")]),isTeacher,[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),Controls.Radio("Student",List.ofArray([AttrProxy.Create("class","radio")]),Var.Create$1(!isTeacher.Get()),[],[AttrProxy.Create("type","radio"),AttrProxy.Create("name","optradio")]),((function(a$1)
    {
     return(Controls.Button())(a$1);
    }("Register"))(List.ofArray([AttrProxy.Create("class","btn btn-primary")])))(function()
@@ -350,19 +352,19 @@
     });
    })),null);
   }
-  return Form.Render(Runtime.Curried(r,6),Form.Run(function($1)
+  return Form.Render(Runtime.Curried(r,5),Form.Run(function($1)
   {
    return a($1[0],$1[1],$1[2],$1[3]);
-  },Form.WithSubmit(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Form.Return(Runtime.Curried(function($1,pass,name,email,isTeacher)
+  },Form.WithSubmit(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Pervasives.op_LessMultiplyGreater(Form.Return(Runtime.Curried(function(email,pass,name,isTeacher)
   {
    return[email,pass,name,isTeacher];
-  },5)),Validation.IsNotEmpty("Enter an username",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))),Validation.IsNotEmpty("Enter a full name",Form.Yield(""))),Validation.IsNotEmpty("Enter an email",Form.Yield(""))),Form.Yield(false)))));
+  },4)),Validation.IsNotEmpty("Enter an email",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))),Validation.IsNotEmpty("Enter a full name",Form.Yield(""))),Form.Yield(false)))));
  };
  RegClient.AnonUser=function()
  {
   function r(user,pass,submit)
   {
-   return Doc.Element("form",[],[Simple.InputWithError("Username",user,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),((function(a$1)
+   return Doc.Element("form",[],[Simple.InputWithError("Email",user,submit.view),Simple.InputPasswordWithError("Password",pass,submit.view),((function(a$1)
    {
     return(Controls.Button())(a$1);
    }("Log in"))(List.ofArray([AttrProxy.Create("class","btn btn-primary")])))(function()
@@ -391,7 +393,7 @@
    {
     return[user,pass];
    };
-  }),Validation.IsNotEmpty("Enter an username",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))))));
+  }),Validation.IsNotEmpty("Enter an email",Form.Yield(""))),Validation.IsNotEmpty("Enter a password",Form.Yield(""))))));
  };
  RegClient.LogOutUser=function()
  {
@@ -408,10 +410,6 @@
  CommonClient.FollowCourse=function()
  {
   return Doc.Element("div",[],[RendersClient.CoursematesList(ModelsClient.CreatePeopleModel())]);
- };
- CommonClient.CoursesOverview=function()
- {
-  return Doc.Element("div",[],[RendersClient.CoursesList((new AjaxRemotingProvider.New()).Sync("HwProj2:HwProj2.Server.GetAllOngoingCourses:1418547080",[]))]);
  };
  CommonClient.DoTasks=function()
  {
@@ -453,7 +451,14 @@
  {
   return Doc.Element("div",[],[RendersClient.ToCheckList(ModelsClient.CreateTasksModel())]);
  };
- Templating.MenuBarLogged$33$27=Runtime.Curried3(function($1,$2,$3)
+ Course.New=function(CourseId,CourseData)
+ {
+  return{
+   CourseId:CourseId,
+   CourseData:CourseData
+  };
+ };
+ Templating.MenuBarLogged$43$27=Runtime.Curried3(function($1,$2,$3)
  {
   return RegClient.LogOutUser();
  });
