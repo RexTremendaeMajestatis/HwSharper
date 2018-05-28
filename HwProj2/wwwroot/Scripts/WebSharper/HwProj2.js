@@ -458,7 +458,7 @@
    CourseData:CourseData
   };
  };
- Templating.MenuBarLogged$43$27=Runtime.Curried3(function($1,$2,$3)
+ Templating.MenuBarLogged$42$27=Runtime.Curried3(function($1,$2,$3)
  {
   return RegClient.LogOutUser();
  });
