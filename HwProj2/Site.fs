@@ -14,9 +14,8 @@ type EndPoint =
     | [<EndPoint "/about">] About
     | [<EndPoint "/profile">] Profile
     | [<EndPoint "GET /course">] GetCourse of int
-    //| [<EndPoint "PUT /course"; Json "course">] UpdateCourse of course: Course
-    | [<EndPoint "POST /course"; Json "data">] CreateCourse of data: string
-    | [<EndPoint "DELETE /course"; Json "id">] DeleteCourse of id: int
+    | [<EndPoint "POST /course">] CreateCourse of data: string
+    | [<EndPoint "GET /delete_course">] DeleteCourse of id: int
     | [<EndPoint "/edit">] EditCourse of int
     | [<EndPoint "/courses">] ListOfCourses
     
@@ -60,6 +59,7 @@ module Templating =
 
 module Site =
     open WebSharper.UI.Html
+    open DataManager
    
     let StartPage (ctx : Context<_>) =
         async {
@@ -68,7 +68,7 @@ module Site =
                 match loggedIn with
                 | Some _ ->
                     div [] [
-                            h1 [] [text "Work in progress"]
+                            h1 [] [text "Здесь будут отображаться ваши новости."]
                     ]
                 | None ->
                     div [] [
@@ -80,26 +80,28 @@ module Site =
             return! Templating.Main ctx EndPoint.Start "Start" [content]
         }
 
-    // get all ongoing courses for student
-    // копипаст суть ересь надо подумать как объединить логику для student и teacher
+    // get all ongoing courses for cur user
     let AllCoursesForUser (ctx: Context<_>) =
         let ( => ) txt endpoint = a [attr.href (ctx.Link endpoint)] [text txt]
-        Templating.Main ctx EndPoint.ListOfCourses "Current courses" [
-            h1 [] [text "Courses"]
+        Templating.Main ctx EndPoint.ListOfCourses "Текущие курсы" [
+            h1 [] [text "Курсы"]
             table [attr.``class`` "table table-striped table-hover"] [
                 thead [] [
-                    td [] [text "Course #"]
-                    td [] [text "Teacher"]
-                    td [] [text "Group number"]
+                    td [] [text "Название курса"]
+                    td [] [text "Преподаватель"]
+                    td [] [text "Номер группы"]
+                    td [] [text "Курс завершен"]
                 ]
                 tbody []
                     (Server.GetAllOngoingCourses()
                     |> Seq.map (fun course ->
                         tr [] [
-                            td [] [sprintf "#%d" course.CourseId => EndPoint.GetCourse course.CourseId]
-                            td [] [text course.Teacher.FullName]
+                            td [] [sprintf "%s" <| Server.GetTitleCourseById (course.Id) => EndPoint.GetCourse course.CourseId]
+                            td [] [text course.TeacherId]
                             td [] [text (string course.GroupId)]
+                            td [] [text (string course.Completed)]
                             td [] [
+                                "DELETE" => EndPoint.DeleteCourse course.CourseId
                                 text " | "
                                 "EDIT" => EndPoint.EditCourse course.CourseId                            ]
                         ] :> Doc
@@ -113,11 +115,32 @@ module Site =
             p [] [text "I'm just trying to deal with my course work:с"]
         ]
 
-    let ProfilePage ctx =
+    let ProfilePage (ctx: Context<_>) =
+        let getUser = ctx.UserSession.GetLoggedInUser() |> Async.RunSynchronously
+        let login = 
+            getUser
+            |> (fun getUser -> match getUser with 
+                               | Some name -> name 
+                               | _ -> "" )
+        let isTeacher = AccountManager.IsTeacher login
         Templating.Main ctx EndPoint.Profile "Profile" [
-            h1 [] [text "Profile"]
-            p [] [text "*Profile information*"]
+            h1 [] [text "Ваш профиль"]
+            p [] [text "Ваш email: "]
+            p [] [text login]
+            p [] [text "Ваше имя: "]
+            p [] [text "Peter Pen"]
+            p [] [text "Ваш статус: "]
+            p [] [text (match isTeacher with | true -> "Преподаватель" | false -> "Студент")]
         ]
+
+    let DeletePage (ctx: Context<_>) (id: int) =
+        let ( => ) txt endpoint = a [attr.href (ctx.Link endpoint)] [text txt]
+        Templating.Main ctx (EndPoint.DeleteCourse id) "DeletePage" [
+            p [] [text "Курс успешно удален."]
+            br [] []
+            p [] ["Вернуться к списку курсов." => EndPoint.ListOfCourses]
+        ]
+            
 
     [<Website>]
     let Main =
@@ -135,9 +158,8 @@ module Site =
                 //MyCourses.Save (MyCourses.GetId()) course
                 //Content.Text "Course created successfully."
             | EndPoint.DeleteCourse id ->
-                StartPage ctx
-                //MyCourses.Delete id
-                //Content.Text "Course deleted successfully."
+                OngoingCoursesManager.DeleteOngoingCourse id
+                DeletePage ctx id
             | EndPoint.GetCourse id ->
                 StartPage ctx
                 //GetCourse id

@@ -39,3 +39,8 @@ module Server =
         let courses = OngoingCoursesManager.GetAllOngoingCourses()
         courses
 
+    [<Rpc>]
+    let GetTitleCourseById (id: int) =
+        let courses = CoursesBankManager.GetAllCourses()
+        let result = Seq.find (fun (course: Course) -> course.Id = id) courses 
+        result.Title
